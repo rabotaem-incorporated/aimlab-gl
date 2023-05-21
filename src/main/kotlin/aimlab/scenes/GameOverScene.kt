@@ -1,7 +1,10 @@
 package aimlab.scenes
 
 import aimlab.TextAlign
+import aimlab.aimlabclient.models.Stat
+import aimlab.aimlabclient.post
 import engine.Scene
+import engine.System
 import engine.components.Button
 import engine.components.TextRenderer
 import engine.systems.Camera2d
@@ -10,9 +13,22 @@ import engine.systems.RenderPipeline
 import engine.systems.UiManager
 import glm_.vec3.Vec3
 import graphics.BoundingBox
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.concurrent.thread
 
 fun createGameOverScene(score: Int, gameScene: Scene): Scene {
     val scene = Scene(gameScene.glfwContext)
+
+    runBlocking {
+        launch(Dispatchers.Unconfined) {
+            post(Stat(
+                id = java.lang.System.getProperty("user.name"),
+                score = score.toDouble(),
+            ))
+        }
+    }
 
     scene.systems.add(RenderPipeline(scene))
     scene.systems.add(ExitOnEscape(scene))

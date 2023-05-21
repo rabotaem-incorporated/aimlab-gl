@@ -50,10 +50,11 @@ dependencies {
     runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
 
     implementation(kotlin("reflect"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
 
     implementation("kotlin.graphics:glm:0.9.9.1-7")
 
-    implementation("client")
+    implementation(project(":client"))
 }
 
 tasks.test {
