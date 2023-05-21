@@ -23,10 +23,16 @@ fun createGameOverScene(score: Int, gameScene: Scene): Scene {
 
     runBlocking {
         launch(Dispatchers.Unconfined) {
-            post(Stat(
-                id = java.lang.System.getProperty("user.name"),
-                score = score.toDouble(),
-            ))
+            try {
+                post(
+                    Stat(
+                        id = java.lang.System.getProperty("user.name"),
+                        score = score.toDouble(),
+                    )
+                )
+            } catch(e: Exception) {
+                println("Failed to post score")
+            }
         }
     }
 
