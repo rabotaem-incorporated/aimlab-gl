@@ -52,6 +52,8 @@ dependencies {
     implementation(kotlin("reflect"))
 
     implementation("kotlin.graphics:glm:0.9.9.1-7")
+
+    implementation("client")
 }
 
 tasks.test {
