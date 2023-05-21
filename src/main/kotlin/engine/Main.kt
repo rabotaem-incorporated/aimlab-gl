@@ -1,9 +1,9 @@
 package engine
 
 import engine.components.Renderer
-import engine.components.SolidColorMaterial
 import engine.systems.DebugCamera
 import engine.systems.ExitOnEscape
+import engine.systems.Light
 import engine.systems.RenderPipeline
 import glm_.glm
 import glm_.vec3.Vec3
@@ -17,6 +17,7 @@ fun main() = launchGame {
 
     sceneManager.scene.systems.add(RenderPipeline(sceneManager.scene))
     sceneManager.scene.systems.add(ExitOnEscape(sceneManager.scene))
+    sceneManager.scene.systems.add(Light(sceneManager.scene, Vec3(0.0f, 1.0f, 0.0f)))
 
     // sceneManager.scene.aimlab.components.systems.add(
     //     SceneCamera(

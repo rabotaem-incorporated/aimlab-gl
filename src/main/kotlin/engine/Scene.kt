@@ -9,7 +9,11 @@ class Scene(val glfwContext: GlfwContext) {
 
     fun start() {
         for (system in systems) system.onStart()
-        for (entity in entities) entity.tick()
+    }
+
+    fun stop() {
+        while (entities.isNotEmpty()) entities[0].destroy()
+        for (system in systems) system.onStop()
     }
 
     fun tick() {
@@ -29,4 +33,6 @@ class Scene(val glfwContext: GlfwContext) {
         for (system in systems) if (system is T) return system
         throw IllegalStateException("System ${T::class} not found")
     }
+
+    val time get() = tickContext?.time?.current
 }

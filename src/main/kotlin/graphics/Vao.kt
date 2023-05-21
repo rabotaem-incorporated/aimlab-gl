@@ -2,15 +2,21 @@ package graphics
 
 import org.lwjgl.opengl.GL30
 
-class Vao {
+class Vao(manage: Boolean = true) {
     val handle: Int = GL30.glGenVertexArrays()
     private val vertexBuffers: MutableList<VertexBuffer> = mutableListOf()
     private val elementsBuffer: MutableList<ElementBuffer> = mutableListOf()
 
     init {
-        NativeAllocatorContext.scope {
-            defer { GL30.glDeleteVertexArrays(handle) }
+        if (manage) {
+            NativeAllocatorContext.scope {
+                defer { free() }
+            }
         }
+    }
+
+    fun free() {
+        GL30.glDeleteVertexArrays(handle)
     }
 
     inline fun <T> withBind(crossinline block: BoundVaoContext.() -> T): T {

@@ -1,4 +1,4 @@
-package aimlab
+package aimlab.components
 
 import engine.Component
 import engine.Entity

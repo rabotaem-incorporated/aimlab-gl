@@ -84,8 +84,8 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
         }
     }
 
-    fun vao(): Vao {
-        return Vao()
+    fun vao(managed: Boolean = true): Vao {
+        return Vao(managed)
     }
 
     fun terminate() {

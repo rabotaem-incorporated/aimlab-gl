@@ -54,8 +54,20 @@ class ShaderProgram(private val handle: Int, private val uniforms: Map<String, U
         return uniforms[name]?.location ?: throw Error("Uniform $name not found")
     }
 
+    fun enableDepthTest() {
+        GL20.glEnable(GL20.GL_DEPTH_TEST)
+    }
+
+    fun disableDepthTest() {
+        GL20.glDisable(GL20.GL_DEPTH_TEST)
+    }
+
     fun setUniform(name: String, value: Int) {
         GL20.glUniform1i(uniformLocation(name), value)
+    }
+
+    fun setUniform(name: String, value: Float) {
+        GL20.glUniform1f(uniformLocation(name), value)
     }
 
     fun setUniform(name: String, value: Vec3) {

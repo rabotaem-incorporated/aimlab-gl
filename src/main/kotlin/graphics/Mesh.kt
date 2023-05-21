@@ -1,14 +1,20 @@
 package graphics
 
+import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class Mesh(private val vertices: List<Vertex>, private val triangles: List<Triangle>) {
+data class BoundingBox(val min: Vec3, val max: Vec3) {
+    fun isEmpty(): Boolean = min.x >= max.x || min.y >= max.y || min.z >= max.z
+    fun size(): Vec3 = max - min
+}
+
+class Mesh(private val vertices: MutableList<Vertex>, private val triangles: MutableList<Triangle>) {
     data class Vertex(val position: Vec3, val normal: Vec3, val uv: Vec2)
     data class Triangle(val a: Int, val b: Int, val c: Int)
 
-    fun vao(context: GlfwContext) = NativeAllocatorContext.scope {
-        val vao = context.vao()
+    fun vao(context: GlfwContext, managed: Boolean = true) = NativeAllocatorContext.scope {
+        val vao = context.vao(managed)
 
         vao.withBind {
             val vertexBuffer = allocStructs(
@@ -34,6 +40,42 @@ class Mesh(private val vertices: List<Vertex>, private val triangles: List<Trian
         }
 
         vao
+    }
+
+    val boundingBox: BoundingBox get() {
+        var min = Vec3(Float.POSITIVE_INFINITY)
+        var max = Vec3(Float.NEGATIVE_INFINITY)
+
+        for (vertex in vertices) {
+            min = glm.min(min, vertex.position)
+            max = glm.max(max, vertex.position)
+        }
+
+        return BoundingBox(min, max)
+    }
+
+    fun append(other: Mesh, shift: Vec3) {
+        val offset = vertices.size
+
+        vertices += other.vertices.map {
+            Vertex(it.position + shift, it.normal, it.uv)
+        }
+
+        triangles += other.triangles.map { triangle ->
+            Triangle(triangle.a + offset, triangle.b + offset, triangle.c + offset)
+        }
+    }
+
+    fun shift(offset: Vec3) {
+        for (vertex in vertices) {
+            vertex.position += offset
+        }
+    }
+
+    fun scale(scale: Vec3) {
+        for (vertex in vertices) {
+            vertex.position *= scale
+        }
     }
 
     companion object {

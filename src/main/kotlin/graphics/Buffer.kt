@@ -87,7 +87,7 @@ class ElementBuffer(
         }
     }
 
-    private val count = when(mode) {
+    private val count = when (mode) {
         DrawMode.Triangles -> data.count * 3
     }
 

@@ -12,6 +12,10 @@ class GameLaunchContext(
         return Mesh.loadObj(path).vao(glfwContext)
     }
 
+    fun loadObj(path: String): Mesh {
+        return Mesh.loadObj(path)
+    }
+
     fun loadTexture(path: String): Texture {
         return Texture(path)
     }
@@ -60,6 +64,13 @@ fun launchGame(block: GameLaunchContext.() -> Unit) = NativeAllocatorContext.new
             uniform("projectionView")
             uniform("transform")
             uniform("solidColor")
+            uniform("ambientLight")
+            uniform("diffuseLight")
+            uniform("specularLight")
+            uniform("specularDir")
+            uniform("lightDir")
+            uniform("viewPos")
+            uniform("shininess")
         }
 
         gameConfig.runOnStartup.forEach {

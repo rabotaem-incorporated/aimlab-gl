@@ -16,7 +16,7 @@ class Entity(val scene: Scene, val parent: Entity?) {
         return null
     }
 
-    fun <T: Component> addComponent(component: T): T {
+    fun <T : Component> addComponent(component: T): T {
         components.add(component)
         component.onCreate()
         return component
@@ -27,9 +27,9 @@ class Entity(val scene: Scene, val parent: Entity?) {
         for (child in children) child.tick()
     }
 
-    fun destory() {
+    fun destroy() {
         for (component in components) component.onDestroy()
-        for (child in children) child.destory()
+        while (children.isNotEmpty()) children[0].destroy()
         parent?.children?.remove(this)
         scene.entities.remove(this)
     }

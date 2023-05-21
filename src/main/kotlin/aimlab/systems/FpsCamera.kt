@@ -1,4 +1,4 @@
-package aimlab
+package aimlab.systems
 
 import engine.Scene
 import engine.systems.SceneCamera

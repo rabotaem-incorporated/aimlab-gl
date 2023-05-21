@@ -5,32 +5,41 @@ import engine.System
 import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 import graphics.Camera
 import graphics.InputKey
 
 open class SceneCamera(val inner: Camera, scene: Scene) : System(scene) {
-    fun getRay(screenPos: Vec2): Ray {
-        val ndc = Vec2(
-            (screenPos.x / scene.glfwContext.windowWidth) * 2.0f - 1.0f,
-            (screenPos.y / scene.glfwContext.windowHeight) * 2.0f - 1.0f,
-        )
-
-        val clip = Vec4(ndc.x, ndc.y, -1.0f, 1.0f)
-        val eye = glm.inverse(inner.projectionMatrix) * clip
-        val world = glm.inverse(inner.viewMatrix) * eye
-        val direction = Vec3(world.x, world.y, world.z).normalize()
-        return Ray(inner.position, direction)
+    fun getForwardRay(): Ray {
+        return Ray(inner.position, inner.direction.normalize())
     }
 }
 
-class DebugCamera(scene: Scene) : SceneCamera(Camera(
-    Vec3(0f, 0f, 0f),
-    0.0f,
-    0.0f,
-    60f,
-    scene.glfwContext,
-), scene) {
+class Camera2d(
+    scene: Scene,
+) : SceneCamera(
+    Camera(
+        Vec3(),
+        0.0f, 0.0f,
+        60.0f,
+        scene.glfwContext,
+    ), scene
+) {
+    private lateinit var uiManager: UiManager
+
+    override fun onStart() {
+        uiManager = scene.query()
+    }
+}
+
+class DebugCamera(scene: Scene) : SceneCamera(
+    Camera(
+        Vec3(0f, 0f, 0f),
+        0.0f,
+        0.0f,
+        60f,
+        scene.glfwContext,
+    ), scene
+) {
     override fun beforeTick() {
         val input = scene.tickContext!!.input
         val time = scene.tickContext!!.time
