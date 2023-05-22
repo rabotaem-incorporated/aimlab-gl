@@ -10,6 +10,16 @@ object Settings {
     var crosshairColor: Vec3 = Vec3(0.0f, 0.0f, 0.0f)
     var crosshairThickness: Float = 0.01f
     var crosshairShape: CrosshairShape = CrosshairShape.CIRCLE
+
+    fun increaseSensitivity() {
+        if (sensitivity.x > 10) return
+        sensitivity.plusAssign(dSensitivity)
+    }
+
+    fun decreaseSensitivity() {
+        if (sensitivity.x < 1e-6) return
+        sensitivity.minusAssign(dSensitivity)
+    }
 }
 
 enum class CrosshairShape {

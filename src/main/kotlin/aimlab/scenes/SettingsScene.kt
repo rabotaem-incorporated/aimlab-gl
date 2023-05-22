@@ -2,6 +2,7 @@ package aimlab.scenes
 
 import aimlab.Settings
 import aimlab.TextAlign
+import aimlab.systems.AimlabKeyboardControls
 import engine.Scene
 import engine.components.Button
 import engine.components.DynamicTextRenderer
@@ -13,6 +14,7 @@ import engine.systems.UiManager
 import glm_.vec3.Vec3
 import graphics.BoundingBox
 import graphics.GlfwContext
+import kotlin.math.max
 
 fun createVariableSetting(
     scene: Scene,
@@ -65,7 +67,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
     val scene = Scene(glfwContext)
 
     scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(KeyboardControls(scene))
+    scene.systems.add(AimlabKeyboardControls(scene))
     scene.systems.add(Camera2d(scene))
     scene.systems.add(UiManager(scene))
 
@@ -80,8 +82,8 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
     }, decrease = {
         Settings.sensitivity.divAssign(1.1f)
     }, {
-        val decimalFormat = java.text.DecimalFormat("0.0")
-        decimalFormat.format(Settings.sensitivity.x * 1000)
+        val decimalFormat = java.text.DecimalFormat("0.00")
+        decimalFormat.format(max(Settings.sensitivity.x, 0.0f) * 1000)
     })
 
     createVariableSetting(scene, 0.45f, "Game Time", increase = {

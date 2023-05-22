@@ -8,15 +8,13 @@ import aimlab.Settings
 class AimlabKeyboardControls(scene : Scene) : KeyboardControls(scene) {
     private fun IncreaseSensitivity() {
         if (scene.tickContext!!.input.isKeyPressed(InputKey.LCTRL) && scene.tickContext!!.input.isKeyPressed(InputKey.PLUS)) {
-            if (Settings.sensitivity.x > 10) return
-            Settings.sensitivity.plusAssign(Settings.dSensitivity)
+            Settings.increaseSensitivity()
         }
     }
 
     private fun DecreaseSensitivity() {
         if (scene.tickContext!!.input.isKeyPressed(InputKey.LCTRL) && scene.tickContext!!.input.isKeyPressed(InputKey.MINUS)) {
-            if (Settings.sensitivity.x < 1e-6) return
-            Settings.sensitivity.minusAssign(Settings.dSensitivity)
+            Settings.decreaseSensitivity()
         }
     }
 

@@ -4,6 +4,7 @@ import aimlab.Resources.glfwContext
 import aimlab.TextAlign
 import aimlab.aimlabclient.models.Stat
 import aimlab.aimlabclient.post
+import aimlab.systems.AimlabKeyboardControls
 import engine.Scene
 import engine.components.Button
 import engine.components.TextRenderer
@@ -39,7 +40,7 @@ fun createGameOverScene(score: Int, gameScene: Scene): Scene {
     }
 
     scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(KeyboardControls(scene))
+    scene.systems.add(AimlabKeyboardControls(scene))
     scene.systems.add(Camera2d(scene))
     scene.systems.add(UiManager(scene))
 

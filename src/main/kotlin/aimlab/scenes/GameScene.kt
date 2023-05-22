@@ -5,6 +5,7 @@ import aimlab.TextAlign
 import aimlab.components.BallSpawner
 import aimlab.components.ScoreCounter
 import aimlab.components.Timer
+import aimlab.systems.AimlabKeyboardControls
 import aimlab.systems.FpsCamera
 import aimlab.systems.Shooter
 import engine.LitTexturedMaterial
@@ -25,7 +26,7 @@ fun createGameScene(glfwContext: GlfwContext): Scene {
     glfwContext.cursorHidden = true
 
     scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(KeyboardControls(scene))
+    scene.systems.add(AimlabKeyboardControls(scene))
     scene.systems.add(CollisionSystem(scene))
     // scene.systems.add(DebugCamera(scene))
     scene.systems.add(FpsCamera(scene))

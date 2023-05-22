@@ -1,6 +1,7 @@
 package aimlab.scenes
 
 import aimlab.TextAlign
+import aimlab.systems.AimlabKeyboardControls
 import engine.Scene
 import engine.components.Button
 import engine.components.TextRenderer
@@ -15,7 +16,7 @@ fun createMainMenu(glfwContext: GlfwContext): Scene {
     val scene = Scene(glfwContext)
 
     scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(KeyboardControls(scene))
+    scene.systems.add(AimlabKeyboardControls(scene))
     scene.systems.add(Camera2d(scene))
     scene.systems.add(UiManager(scene))
 
