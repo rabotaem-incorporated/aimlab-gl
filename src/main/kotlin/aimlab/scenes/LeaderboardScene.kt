@@ -11,8 +11,6 @@ import engine.systems.RenderPipeline
 import engine.systems.UiManager
 import glm_.vec3.Vec3
 import graphics.GlfwContext
-import kotlinx.coroutines.channels.Channel
-import kotlin.concurrent.thread
 
 fun createLeaderboardScene(glfwContext: GlfwContext): Scene {
     val scene = Scene(glfwContext)
@@ -23,7 +21,7 @@ fun createLeaderboardScene(glfwContext: GlfwContext): Scene {
     scene.systems.add(UiManager(scene))
 
     scene.create {
-        addComponent(TextRenderer(this, scene, "Leaderboard", horizontalAlignment = TextAlign.CENTER))
+        addComponent(TextRenderer(this, scene, "Leaderboard", horizontalAlign = TextAlign.CENTER))
         transform.position = Vec3(0.0f, 0.0f, 0.9f)
         transform.scale = 0.2f
     }
@@ -42,8 +40,8 @@ fun createLeaderboardScene(glfwContext: GlfwContext): Scene {
     scene.create {
         addComponent(TextRenderer(
             this, scene, "",
-            horizontalAlignment = TextAlign.CENTER,
-            verticalAlignment = TextAlign.START,
+            horizontalAlign = TextAlign.CENTER,
+            verticalAlign = TextAlign.START,
         ))
         addComponent(Leaderboard(this, scene))
         transform.position = Vec3(0.0f, 0.0f, 0.7f)

@@ -63,13 +63,13 @@ fun createGameScene(glfwContext: GlfwContext): Scene {
     }
 
     scene.create {
-        addComponent(TextRenderer(this, scene, "", horizontalAlignment = TextAlign.START))
+        addComponent(TextRenderer(this, scene, "", horizontalAlign = TextAlign.START))
         addComponent(ScoreCounter(this, scene))
         transform.position = Vec3(0.3f, 0.0f, 0.9f)
     }
 
     scene.create {
-        addComponent(TextRenderer(this, scene, "", horizontalAlignment = TextAlign.END))
+        addComponent(TextRenderer(this, scene, "", horizontalAlign = TextAlign.END))
         addComponent(Timer(this, scene))
         transform.position = Vec3(-0.3f, 0.0f, 0.9f)
     }

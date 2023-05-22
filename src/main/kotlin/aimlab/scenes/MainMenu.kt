@@ -4,13 +4,11 @@ import aimlab.TextAlign
 import engine.Scene
 import engine.components.Button
 import engine.components.TextRenderer
-import engine.components.UiRenderer
 import engine.systems.Camera2d
 import engine.systems.ExitOnEscape
 import engine.systems.RenderPipeline
 import engine.systems.UiManager
 import glm_.vec3.Vec3
-import graphics.BoundingBox
 import graphics.GlfwContext
 
 fun createMainMenu(glfwContext: GlfwContext): Scene {
@@ -22,7 +20,7 @@ fun createMainMenu(glfwContext: GlfwContext): Scene {
     scene.systems.add(UiManager(scene))
 
     scene.create {
-        addComponent(TextRenderer(this, scene, "\"Aimlab\"", horizontalAlignment = TextAlign.CENTER))
+        addComponent(TextRenderer(this, scene, "\"Aimlab\"", horizontalAlign = TextAlign.CENTER))
         transform.position = Vec3(0.0f, 0.0f, 0.5f)
         transform.scale = 0.2f
     }
