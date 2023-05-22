@@ -80,9 +80,9 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
     }
 
     createVariableSetting(scene, 0.6f, "Sensitivity", increase = {
-        Settings.sensitivity.timesAssign(1.1f)
+        Settings.increaseSensitivity()
     }, decrease = {
-        Settings.sensitivity.divAssign(1.1f)
+        Settings.decreaseSensitivity()
     }, {
         val decimalFormat = java.text.DecimalFormat("0.00")
         decimalFormat.format(Settings.sensitivity.x * 1000)

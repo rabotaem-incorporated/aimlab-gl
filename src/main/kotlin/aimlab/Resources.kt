@@ -16,7 +16,6 @@ object Resources {
         ball = launcher.loadModel("/ball.obj")
         quad = launcher.loadModel("/quad.obj")
         terrain = launcher.loadModel("/terrain.obj")
-
         pepega = launcher.loadTexture("/pepega.jpg")
         sand = launcher.loadTexture("/sand.jpg")
 

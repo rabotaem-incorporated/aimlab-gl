@@ -7,7 +7,7 @@ import aimlab.Settings
 import graphics.InputKeyStatus
 
 class AimlabKeyboardControls(scene: Scene) : KeyboardControls(scene) {
-    private fun IncreaseSensitivity() {
+    fun IncreaseSensitivity() {
         if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
             scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.UP &&
             scene.tickContext!!.input.getKeyStatus(InputKey.PLUS) == InputKeyStatus.PRESSED) {
@@ -15,7 +15,7 @@ class AimlabKeyboardControls(scene: Scene) : KeyboardControls(scene) {
         }
     }
 
-    private fun DecreaseSensitivity() {
+    fun DecreaseSensitivity() {
         if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
             scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.UP &&
             scene.tickContext!!.input.getKeyStatus(InputKey.MINUS) == InputKeyStatus.PRESSED) {
@@ -23,7 +23,7 @@ class AimlabKeyboardControls(scene: Scene) : KeyboardControls(scene) {
         }
     }
 
-    private fun IncreaseSensitivityFast() {
+    fun IncreaseSensitivityFast() {
         if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
             scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.DOWN &&
             scene.tickContext!!.input.getKeyStatus(InputKey.PLUS) == InputKeyStatus.PRESSED
@@ -32,7 +32,7 @@ class AimlabKeyboardControls(scene: Scene) : KeyboardControls(scene) {
         }
     }
 
-    private fun DecreaseSensitivityFast() {
+    fun DecreaseSensitivityFast() {
         if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
             scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.DOWN &&
             scene.tickContext!!.input.getKeyStatus(InputKey.MINUS) == InputKeyStatus.PRESSED
