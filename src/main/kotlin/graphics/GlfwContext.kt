@@ -19,6 +19,8 @@ data class GlfwSettings(
 class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
     val handle: Long
 
+    var frameCounter: Long = 0
+
     private var shaderProgram: ShaderProgram? = null
         set(value) {
             value?.use()
@@ -84,6 +86,7 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
 
             time.tick()
             input.tick()
+            frameCounter += 1
         }
     }
 
