@@ -1,6 +1,8 @@
 package aimlab.scenes
 
+import aimlab.CrosshairShape
 import aimlab.Resources
+import aimlab.Settings
 import aimlab.TextAlign
 import aimlab.components.BallSpawner
 import aimlab.components.ScoreCounter
@@ -75,9 +77,27 @@ fun createGameScene(glfwContext: GlfwContext): Scene {
         transform.position = Vec3(-0.3f, 0.0f, 0.9f)
     }
 
-    scene.create {
-        addComponent(UiRenderer(this, scene, Resources.ball, SolidColorMaterial(Vec3(1.0f, 0.0f, 0.0f))))
-        transform.scale = 0.008f
+    when (Settings.crosshairShape) {
+        CrosshairShape.SQUARE -> {
+            scene.create {
+                addComponent(UiRenderer(this, scene, Resources.quad, SolidColorMaterial(Settings.crosshairColor.color)))
+                transform.scale = Settings.crosshairThickness
+            }
+        }
+
+        CrosshairShape.CIRCLE -> {
+            scene.create {
+                addComponent(UiRenderer(this, scene, Resources.ball, SolidColorMaterial(Settings.crosshairColor.color)))
+                transform.scale = Settings.crosshairThickness
+            }
+        }
+
+        CrosshairShape.CROSS -> {
+            scene.create {
+                addComponent(UiRenderer(this, scene, Resources.coords, SolidColorMaterial(Settings.crosshairColor.color)))
+                transform.scale = Settings.crosshairThickness
+            }
+        }
     }
 
     return scene
