@@ -5,20 +5,21 @@ import org.lwjgl.glfw.GLFW
 
 class Input(private val context: GlfwContext) {
     private var lastMousePosition = Vec2(0.0f, 0.0f)
-    private var inputKeyStatuses : MutableMap<InputKey, InputKeyStatus> = mutableMapOf()
+    private var keyStatuses : MutableMap<Key, KeyButtonStatus> = mutableMapOf()
+    private var mouseButtonStatuses : MutableMap<MouseButton, KeyButtonStatus> = mutableMapOf()
 
     init {
-        for (key in InputKey.values()) {
-            inputKeyStatuses[key] = InputKeyStatus.UP
+        for (key in Key.values()) {
+            keyStatuses[key] = KeyButtonStatus.UP
+        }
+
+        for (button in MouseButton.values()) {
+            mouseButtonStatuses[button] = KeyButtonStatus.UP
         }
     }
 
     var mouseDelta = Vec2(0.0f, 0.0f)
         private set
-
-    fun isKeyPressed(key: InputKey): Boolean {
-        return GLFW.glfwGetKey(context.handle, key.code) == GLFW.GLFW_PRESS
-    }
 
     val mousePosition: Vec2
         get() {
@@ -33,29 +34,44 @@ class Input(private val context: GlfwContext) {
         GLFW.glfwSetCursorPos(context.handle, xy.x.toDouble(), xy.y.toDouble())
     }
 
-    fun isMousePressed(button: MouseButton): Boolean {
+    fun isKeyPressed(key: Key): Boolean {
+        return GLFW.glfwGetKey(context.handle, key.code) == GLFW.GLFW_PRESS
+    }
+
+    fun isMouseButtonPressed(button: MouseButton): Boolean {
         return GLFW.glfwGetMouseButton(context.handle, button.code) == GLFW.GLFW_PRESS
     }
 
-    fun getKeyStatus(key: InputKey) = inputKeyStatuses[key]
+    fun getKeyStatus(key: Key) = keyStatuses[key]
+
+    fun getMouseButtonStatus(button: MouseButton) = mouseButtonStatuses[button]
 
     fun tick() {
         val mousePosition = mousePosition
         mouseDelta = mousePosition - lastMousePosition
         lastMousePosition = mousePosition
-        for (key in InputKey.values()) {
+        for (key in Key.values()) {
             if (isKeyPressed(key)) {
-                inputKeyStatuses[key] = if (inputKeyStatuses[key] == InputKeyStatus.UP) InputKeyStatus.PRESSED
-                else InputKeyStatus.DOWN
+                keyStatuses[key] = if (keyStatuses[key] == KeyButtonStatus.UP) KeyButtonStatus.PRESS
+                else KeyButtonStatus.DOWN
             } else {
-                inputKeyStatuses[key] = if (inputKeyStatuses[key] == InputKeyStatus.DOWN) InputKeyStatus.RELEASED
-                else InputKeyStatus.UP
+                keyStatuses[key] = if (keyStatuses[key] == KeyButtonStatus.DOWN) KeyButtonStatus.RELEASE
+                else KeyButtonStatus.UP
+            }
+        }
+        for (button in MouseButton.values()) {
+            if (isMouseButtonPressed(button)) {
+                mouseButtonStatuses[button] = if (mouseButtonStatuses[button] == KeyButtonStatus.UP) KeyButtonStatus.PRESS
+                else KeyButtonStatus.DOWN
+            } else {
+                mouseButtonStatuses[button] = if (mouseButtonStatuses[button] == KeyButtonStatus.DOWN) KeyButtonStatus.RELEASE
+                else KeyButtonStatus.UP
             }
         }
     }
 }
 
-enum class InputKey(val code: Int) {
+enum class Key(val code: Int) {
     SPACE(GLFW.GLFW_KEY_SPACE),
     ESCAPE(GLFW.GLFW_KEY_ESCAPE),
     W(GLFW.GLFW_KEY_W),
@@ -66,20 +82,17 @@ enum class InputKey(val code: Int) {
     LSHIFT(GLFW.GLFW_KEY_LEFT_SHIFT),
     PLUS(GLFW.GLFW_KEY_EQUAL),
     MINUS(GLFW.GLFW_KEY_MINUS),
-    F11(GLFW.GLFW_KEY_F11)
-    ;
+    F11(GLFW.GLFW_KEY_F11),
 }
 
 enum class MouseButton(val code: Int) {
     LEFT(GLFW.GLFW_MOUSE_BUTTON_LEFT),
     RIGHT(GLFW.GLFW_MOUSE_BUTTON_RIGHT),
-    ;
 }
 
-enum class InputKeyStatus() {
+enum class KeyButtonStatus {
     UP,
     DOWN,
-    PRESSED,
-    RELEASED,
-    ;
+    PRESS,
+    RELEASE,
 }

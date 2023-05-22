@@ -140,7 +140,6 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
                 savedWindowPositionY = windowPositionY
                 GLFW.glfwSetWindowMonitor(handle, monitor, 0, 0, mode!!.width(), mode.height(), mode.refreshRate())
             } else {
-
                 GLFW.glfwSetWindowMonitor(handle, 0, savedWindowPositionX, savedWindowPositionY, savedWindowWidth, savedWindowHeight, GLFW.GLFW_DONT_CARE)
             }
             field = value

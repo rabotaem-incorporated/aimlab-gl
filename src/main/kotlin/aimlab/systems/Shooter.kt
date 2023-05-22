@@ -6,15 +6,30 @@ import engine.Scene
 import engine.System
 import engine.systems.CollisionSystem
 import engine.systems.SceneCamera
+import engine.systems.UiManager
+import graphics.KeyButtonStatus
 import graphics.MouseButton
+import kotlin.math.max
 
 class Shooter(scene: Scene) : System(scene) {
     private lateinit var camera: SceneCamera
     private lateinit var collisionSystem: CollisionSystem
 
-    private var mousePressedLastTick = false
+    var totalHit = 0
+        private set
 
-    var score = 0
+    var totalShot = 0
+        private set
+    var score = 0.0
+        private set
+
+    var curCombo : UInt = 0u
+        private set
+
+    var combo : UInt = 0u
+        private set
+
+    var accuracy = 100.0
         private set
 
     private var duration: Float = Settings.time
@@ -36,23 +51,24 @@ class Shooter(scene: Scene) : System(scene) {
     override fun afterTick() {
         val input = scene.tickContext!!.input
 
-        mousePressedLastTick = if (input.isMousePressed(MouseButton.LEFT)) {
-            if (!mousePressedLastTick) {
-                val ray = camera.getForwardRay()
-                val hit = collisionSystem.rayCast(ray)
-                hit?.entity?.destroy()
-                if (hit != null) {
-                    score++
-                }
+        if (input.getMouseButtonStatus(MouseButton.LEFT) == KeyButtonStatus.PRESS) {
+            val ray = camera.getForwardRay()
+            val hit = collisionSystem.rayCast(ray)
+            hit?.entity?.destroy()
+            if (hit != null) {
+                curCombo++
+                score += curCombo.toDouble()
+                combo = max(combo, curCombo)
+                totalHit++
+            } else {
+                curCombo = 0u
             }
-
-            true
-        } else {
-            false
+            totalShot++
+            accuracy = 100.0 * totalHit / totalShot
         }
 
         if (timeLeft <= 0.0f) {
-            scene.tickContext!!.sceneManager.scene = createGameOverScene(score, scene)
+            scene.tickContext!!.sceneManager.scene = createGameOverScene(score, combo, accuracy, scene)
         }
     }
 }

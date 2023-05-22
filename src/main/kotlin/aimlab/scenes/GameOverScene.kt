@@ -9,16 +9,16 @@ import engine.Scene
 import engine.components.Button
 import engine.components.TextRenderer
 import engine.systems.Camera2d
-import engine.systems.KeyboardControls
 import engine.systems.RenderPipeline
 import engine.systems.UiManager
 import glm_.vec3.Vec3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDateTime
 import java.util.*
 
-fun createGameOverScene(score: Int, gameScene: Scene): Scene {
+fun createGameOverScene(score: Double, combo: UInt, accuracy: Double, gameScene: Scene): Scene {
     val scene = Scene(gameScene.glfwContext)
 
     glfwContext.cursorHidden = false
@@ -30,7 +30,10 @@ fun createGameOverScene(score: Int, gameScene: Scene): Scene {
                     Stat(
                         id = UUID.randomUUID().toString(),
                         username = System.getProperty("user.name"),
-                        score = score.toDouble(),
+                        score = score,
+                        combo = combo,
+                        accuracy = accuracy,
+                        datetime = LocalDateTime.now().toString()
                     )
                 )
             } catch(e: Exception) {

@@ -7,7 +7,7 @@ import glm_.vec3.Vec3
 object Settings {
     val dSensitivity: Vec2 = Vec2(0.00001f, 0.00001f)
     val dSensitivityFast: Vec2 = Vec2(0.0001f, 0.0001f)
-    var sensitivity: Vec2 = Vec2(0.00025f, 0.00025f)
+    var sensitivity: Vec2 = Vec2(0.0005f, 0.0005f)
     val maxSensitivity = 0.001f
     var time: Float = 3.0f
     var crosshairColor: CrosshairColor = CrosshairColor.RED

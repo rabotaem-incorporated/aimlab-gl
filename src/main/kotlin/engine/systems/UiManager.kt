@@ -39,7 +39,7 @@ class UiManager(scene: Scene) : System(scene) {
 
             if (mouseUiWorldXZ.x >= buttonMinXZ.x && mouseUiWorldXZ.x <= buttonMaxXZ.x &&
                 mouseUiWorldXZ.y >= buttonMinXZ.y && mouseUiWorldXZ.y <= buttonMaxXZ.y) {
-                if (scene.glfwContext.input.isMousePressed(MouseButton.LEFT)) {
+                if (scene.glfwContext.input.isMouseButtonPressed(MouseButton.LEFT)) {
                     button.state = Button.State.PRESSED
                 } else {
                     if (button.state == Button.State.PRESSED) {
