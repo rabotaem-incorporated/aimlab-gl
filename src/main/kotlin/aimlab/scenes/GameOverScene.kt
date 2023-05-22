@@ -1,5 +1,6 @@
 package aimlab.scenes
 
+import aimlab.Resources.glfwContext
 import aimlab.TextAlign
 import aimlab.aimlabclient.models.Stat
 import aimlab.aimlabclient.post
@@ -21,12 +22,14 @@ import kotlin.concurrent.thread
 fun createGameOverScene(score: Int, gameScene: Scene): Scene {
     val scene = Scene(gameScene.glfwContext)
 
+    glfwContext.cursorHidden = false
+
     runBlocking {
         launch(Dispatchers.Unconfined) {
             try {
                 post(
                     Stat(
-                        id = java.lang.System.getProperty("user.name"),
+                        username = java.lang.System.getProperty("user.name"),
                         score = score.toDouble(),
                     )
                 )

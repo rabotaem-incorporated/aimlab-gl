@@ -4,6 +4,7 @@ import glm_.vec4.Vec4
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
 
 data class WindowSettings(
     val width: Int = 800,
@@ -38,6 +39,7 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, glfwSettings.version.first)
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, glfwSettings.version.second)
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE)
+        GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 16);
 
         handle = GLFW.glfwCreateWindow(
             windowSettings.width,
@@ -66,6 +68,7 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
         GL11.glEnable(GL11.GL_DEPTH_TEST)
         // GL11.glEnable(GL11.GL_CULL_FACE)
         // GL11.glCullFace(GL11.GL_BACK)
+        GL11.glEnable(GL13.GL_MULTISAMPLE);
     }
 
     fun compileShaderProgram(shaderProgramBuilder: ShaderProgramBuilder.() -> Unit): ShaderProgram {
@@ -95,6 +98,12 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
     fun close() {
         GLFW.glfwSetWindowShouldClose(handle, true)
     }
+
+    var cursorHidden: Boolean = false
+        set(value) {
+            GLFW.glfwSetInputMode(handle, GLFW.GLFW_CURSOR, if (value) GLFW.GLFW_CURSOR_HIDDEN else GLFW.GLFW_CURSOR_NORMAL)
+            field = value
+        }
 }
 
 class FrameContext {

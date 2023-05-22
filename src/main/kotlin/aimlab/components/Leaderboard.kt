@@ -22,25 +22,28 @@ class Leaderboard(entity: Entity, scene: Scene) : Component(entity, scene) {
 
         runBlocking {
             launch(Dispatchers.Unconfined) {
-                val stats = get()!!
-
-
-
-                val text = buildString {
-                    for (stat in stats.sortedByDescending { it.score }.take(10)) {
-                        appendLine("${stat.id}: ${stat.score.toInt()}")
+                try {
+                    val stats = get()!!
+                    val text = buildString {
+                        for (stat in stats.sortedByDescending { it.score }.take(10)) {
+                            appendLine("${stat.username}: ${stat.score.toInt()}")
+                        }
                     }
-                }
 
-                mutex.withLock {
-                    content = text
+                    mutex.withLock {
+                        content = text
+                    }
+                } catch (e: Exception) {
+                    mutex.withLock {
+                        content = "Error: ${e.message}"
+                    }
+                    return@launch
                 }
             }
         }
     }
 
     override fun onTick() {
-
         runBlocking {
             mutex.withLock {
                 textRenderer.text = content

@@ -7,6 +7,7 @@ import java.util.*
 @Serializable
 class Stat (
     var id: String = "",
+    var username: String = "",
     var score: Double = 0.0,
     var combo: UInt = 0u,
     var accuracy: Double = 0.0,

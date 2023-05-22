@@ -23,7 +23,7 @@ fun createLeaderboardScene(glfwContext: GlfwContext): Scene {
     scene.systems.add(UiManager(scene))
 
     scene.create {
-        addComponent(TextRenderer(this, scene, "\"Leaderboard\"", horizontalAlignment = TextAlign.CENTER))
+        addComponent(TextRenderer(this, scene, "Leaderboard", horizontalAlignment = TextAlign.CENTER))
         transform.position = Vec3(0.0f, 0.0f, 0.9f)
         transform.scale = 0.2f
     }

@@ -13,6 +13,7 @@ import engine.SolidColorMaterial
 import engine.TexturedMaterial
 import engine.components.Renderer
 import engine.components.TextRenderer
+import engine.components.UiRenderer
 import engine.systems.*
 import glm_.quat.Quat
 import glm_.vec3.Vec3
@@ -20,6 +21,8 @@ import graphics.GlfwContext
 
 fun createGameScene(glfwContext: GlfwContext): Scene {
     val scene = Scene(glfwContext)
+
+    glfwContext.cursorHidden = true
 
     scene.systems.add(RenderPipeline(scene))
     scene.systems.add(ExitOnEscape(scene))
@@ -55,7 +58,7 @@ fun createGameScene(glfwContext: GlfwContext): Scene {
             Vec3(0.2f, 0.2f, 0.2f),
             1.0f
         ), Resources.terrain))
-        transform.position = Vec3(0.0f, -5.0f, 0.0f)
+        transform.position = Vec3(0.0f, -6.0f, 0.0f)
         transform.scale = 2.0f
     }
 
@@ -69,6 +72,11 @@ fun createGameScene(glfwContext: GlfwContext): Scene {
         addComponent(TextRenderer(this, scene, "", horizontalAlignment = TextAlign.END))
         addComponent(Timer(this, scene))
         transform.position = Vec3(-0.3f, 0.0f, 0.9f)
+    }
+
+    scene.create {
+        addComponent(UiRenderer(this, scene, Resources.ball, SolidColorMaterial(Vec3(1.0f, 0.0f, 0.0f))))
+        transform.scale = 0.008f
     }
 
     return scene
