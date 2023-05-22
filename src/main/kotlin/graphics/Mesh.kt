@@ -4,17 +4,38 @@ import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-data class BoundingBox(val min: Vec3, val max: Vec3) {
-    fun isEmpty(): Boolean = min.x >= max.x || min.y >= max.y || min.z >= max.z
-    fun size(): Vec3 = max - min
-}
-
+/**
+ * Представление меша в виде списка вершин и списка треугольников в оперативной памяти.
+ *
+ * Вершины содержат позицию, нормаль и текстурные координаты.
+ *
+ * Предполагается, что после отправки на GPU меш больше не будет меняться, поэтому
+ * этот класс должен упросить работу с мешами, пока они на GPU не отправлены.
+ *
+ * @param vertices список вершин
+ * @param triangles список треугольников
+ */
 class Mesh(private val vertices: MutableList<Vertex>, private val triangles: MutableList<Triangle>) {
+    /**
+     * Вершина меша.
+     */
     data class Vertex(val position: Vec3, val normal: Vec3, val uv: Vec2)
+
+    /**
+     * Треугольник меша.
+     */
     data class Triangle(val a: Int, val b: Int, val c: Int)
 
-    fun vao(context: GlfwContext, managed: Boolean = true) = NativeAllocatorContext.scope {
-        val vao = context.vao(managed)
+    /**
+     * Превращает меш в неизменяемый VAO.
+     *
+     * @param managed если `true`, то VAO будет уничтожен в контексте глобального аллокатора
+     *
+     * @see [Vao]
+     * @see [NativeAllocatorContext]
+     */
+    fun vao(managed: Boolean = true) = NativeAllocatorContext.scope {
+        val vao = Vao(managed)
 
         vao.withBind {
             val vertexBuffer = allocStructs(
@@ -35,13 +56,16 @@ class Mesh(private val vertices: MutableList<Vertex>, private val triangles: Mut
                 }
             }
 
-            vertexBuffer(Buffer.Usage.Static, vertexBuffer)
-            elementBuffer(Buffer.Usage.Static, elementBuffer)
+            vertexBuffer(Buffer.Usage.STATIC, vertexBuffer)
+            elementBuffer(Buffer.Usage.STATIC, elementBuffer)
         }
 
         vao
     }
 
+    /**
+     * Возвращает [BoundingBox] меша. Работает за `O(len(vertices))`.
+     */
     val boundingBox: BoundingBox get() {
         var min = Vec3(Float.POSITIVE_INFINITY)
         var max = Vec3(Float.NEGATIVE_INFINITY)
@@ -54,6 +78,14 @@ class Mesh(private val vertices: MutableList<Vertex>, private val triangles: Mut
         return BoundingBox(min, max)
     }
 
+    /**
+     * Добавляет к мешу другой меш, сдвинутый на `shift`.
+     *
+     * Применяется для объединения мешей букв при генерации текста.
+     *
+     * @see [engine.components.TextRenderer]
+     * @see [aimlab.Resources]
+     */
     fun append(other: Mesh, shift: Vec3) {
         val offset = vertices.size
 
@@ -66,21 +98,25 @@ class Mesh(private val vertices: MutableList<Vertex>, private val triangles: Mut
         }
     }
 
+    /**
+     * Сдвигает меш на `offset`, in-place.
+     */
     fun shift(offset: Vec3) {
         for (vertex in vertices) {
             vertex.position += offset
         }
     }
 
-    fun scale(scale: Vec3) {
-        for (vertex in vertices) {
-            vertex.position *= scale
-        }
-    }
-
     companion object {
+        /**
+         * [Layout] вершины меша.
+         * @see [Vao]
+         */
         val vertexLayout = Layout.of(Layout.Fragment.Float3, Layout.Fragment.Float3, Layout.Fragment.Float2)
 
+        /**
+         * Загружает меш из ресурса в формате `.obj`.
+         */
         fun loadObj(path: String): Mesh {
             val positions = mutableListOf<Vec3>()
             val normals = mutableListOf<Vec3>()

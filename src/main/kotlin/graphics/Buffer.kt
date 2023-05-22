@@ -4,6 +4,14 @@ import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20
 import java.nio.ByteBuffer
 
+/**
+ * Буфер OpenGL, то есть то, что мы отправили на видеокарту.
+ *
+ * Содержит хэндл OpenGL.
+ *
+ * @param usage Вообще в теории может потребоваться возможность в них писать, но пока что не нужно,
+ * поэтому этот параметр логично ставить в [Usage.STATIC].
+ */
 abstract class Buffer(
     type: Type,
     usage: Usage,
@@ -11,27 +19,39 @@ abstract class Buffer(
 ) {
     private var handle: Int = GL15.glGenBuffers()
 
+    /**
+     * Тип буфера: вершинный или элементный.
+     */
     enum class Type {
-        Vertex,
-        Element,
+        VERTEX,
+        ELEMENT,
     }
 
+    /**
+     * Как часто будут меняться данные в буфере.
+     *
+     * @see [GL15.glBufferData]
+     *
+     * @property STATIC Данные не будут меняться, наиболее вероятный вариант
+     * @property DYNAMIC Данные будут меняться, но не часто
+     * @property STREAM Данные будут меняться часто
+     */
     enum class Usage {
-        Static,
-        Dynamic,
-        Stream,
+        STATIC,
+        DYNAMIC,
+        STREAM,
     }
 
     init {
         val glTarget = when (type) {
-            Type.Vertex -> GL15.GL_ARRAY_BUFFER
-            Type.Element -> GL15.GL_ELEMENT_ARRAY_BUFFER
+            Type.VERTEX -> GL15.GL_ARRAY_BUFFER
+            Type.ELEMENT -> GL15.GL_ELEMENT_ARRAY_BUFFER
         }
 
         val glUsage = when (usage) {
-            Usage.Static -> GL15.GL_STATIC_DRAW
-            Usage.Dynamic -> GL15.GL_DYNAMIC_DRAW
-            Usage.Stream -> GL15.GL_STREAM_DRAW
+            Usage.STATIC -> GL15.GL_STATIC_DRAW
+            Usage.DYNAMIC -> GL15.GL_DYNAMIC_DRAW
+            Usage.STREAM -> GL15.GL_STREAM_DRAW
         }
 
         GL15.glBindBuffer(glTarget, handle)
@@ -43,10 +63,16 @@ abstract class Buffer(
     }
 }
 
+/**
+ * Буфер вершин.
+ *
+ * @param usage [Buffer.Usage]
+ * @param data Данные, которые будут отправлены на видеокарту. Хранятся в [StructArray].
+ */
 class VertexBuffer(
     usage: Usage,
     data: StructArray,
-) : Buffer(Type.Vertex, usage, data.buffer) {
+) : Buffer(Type.VERTEX, usage, data.buffer) {
     init {
         for ((index, fragment) in data.layout.fragments.withIndex()) {
             val (glType, size) = when (fragment) {
@@ -70,11 +96,23 @@ class VertexBuffer(
     }
 }
 
+/**
+ * Буфер индексов. Показывает, что рисовать.
+ *
+ * @param usage [Buffer.Usage]
+ * @param data Данные, которые будут отправлены на видеокарту. Хранятся в [StructArray].
+ * Пока предполагается, что структура будет состоять из троек индексов ([Int3]).
+ * @param mode Режим отрисовки, поддерживается только [DrawMode.Triangles].
+ */
 class ElementBuffer(
     usage: Usage,
     data: StructArray,
     private val mode: DrawMode
-) : Buffer(Type.Element, usage, data.buffer) {
+) : Buffer(Type.ELEMENT, usage, data.buffer) {
+    /**
+     * Как имеено будут отрисовываться данные.
+     * Пока что поддерживается только [DrawMode.Triangles].
+     */
     enum class DrawMode {
         Triangles,
     }
@@ -91,6 +129,12 @@ class ElementBuffer(
         DrawMode.Triangles -> data.count * 3
     }
 
+    /**
+     * Отрисовывает все элементы буфера.
+     *
+     * Предполагается, что в этот момент выбрана нужная [ShaderProgram],
+     * установлены нужные юниформы и буферы вершин. Обычно это делается в [Vao.drawAll].
+     */
     fun draw() {
         val glMode = when (mode) {
             DrawMode.Triangles -> GL15.GL_TRIANGLES

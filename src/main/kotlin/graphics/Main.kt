@@ -23,7 +23,7 @@ fun main() = NativeAllocatorContext.new {
         val vertexLayout = Layout.of(Layout.Fragment.Float3, Layout.Fragment.Float3, Layout.Fragment.Float2)
 
         val texture2 = Texture("/pepega.jpg")
-        val suzanne = Mesh.loadObj("/suzanne.obj").vao(this)
+        val suzanne = Mesh.loadObj("/suzanne.obj").vao()
 
         val vao = vao()
         vao.withBind {
@@ -56,12 +56,12 @@ fun main() = NativeAllocatorContext.new {
             }
 
             vertexBuffer(
-                Buffer.Usage.Static,
+                Buffer.Usage.STATIC,
                 vertices,
             )
 
             elementBuffer(
-                Buffer.Usage.Static,
+                Buffer.Usage.STATIC,
                 indices,
             )
         }

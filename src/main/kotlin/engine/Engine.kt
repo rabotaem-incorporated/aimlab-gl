@@ -9,7 +9,7 @@ class GameLaunchContext(
     val sceneManager: SceneManager = SceneManager()
 
     fun loadModel(path: String): Vao {
-        return Mesh.loadObj(path).vao(glfwContext)
+        return Mesh.loadObj(path).vao()
     }
 
     fun loadObj(path: String): Mesh {

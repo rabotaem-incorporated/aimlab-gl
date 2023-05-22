@@ -6,6 +6,9 @@ import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
 
+/**
+ * Настройки окна. Конкретно сейчас используются только для создания окна.
+ */
 data class WindowSettings(
     val width: Int = 800,
     val height: Int = 600,
@@ -14,13 +17,32 @@ data class WindowSettings(
     val title: String = "Window",
 )
 
+/**
+ * Настройки GLFW. Конкретно сейчас используются только для создания окна.
+ */
 data class GlfwSettings(
+    /** Версия OpenGL, пара (Major, Minor) */
     val version: Pair<Int, Int> = 4 to 2,
 )
 
+/**
+ * Общий контекст для работы с OpenGL и GLFW. Это основной класс в этом слое.
+ * Предполагается, что это основная поверхность соприкоснования со внешним миром.
+ *
+ * В констукторе создаётся окно GLFW и контекст OpenGL, подключаются функции OpenGL,
+ * некоторые настройки OpenGL, например включение мультисэмплинга.
+ *
+ * @param windowSettings настройки окна
+ */
 class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
+    /**
+     * Хэндл окна GLFW, возвращается функцией [GLFW.glfwCreateWindow].
+     */
     val handle: Long
 
+    /**
+     * Счётчик кадров, увеличивается на 1 каждый кадр.
+     */
     var frameCounter: Long = 0
 
     var windowWidth = windowSettings.width
@@ -88,12 +110,14 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
             windowPositionY = ypos
         }
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        // GL11.glEnable(GL11.GL_CULL_FACE)
-        // GL11.glCullFace(GL11.GL_BACK)
         GL11.glEnable(GL13.GL_MULTISAMPLE)
     }
 
+    /**
+     * Создаёт шейдерную программу.
+     *
+     * @param shaderProgramBuilder функция, которая создаёт шейдерную программу, используя [ShaderProgramBuilder].
+     */
     fun compileShaderProgram(shaderProgramBuilder: ShaderProgramBuilder.() -> Unit): ShaderProgram {
         return ShaderProgramBuilder().apply(shaderProgramBuilder).build()
     }

@@ -5,6 +5,15 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.stb.STBImage
 import org.lwjgl.system.MemoryStack
 
+/**
+ * Текстура из OpenGL, готовая к использованию.
+ *
+ * По непонятной мне причине, забиндить больше одной текстуры одновременно не получается.
+ *
+ * @param path Путь к файлу с текстурой.
+ *
+ * @constructor Создаёт текстуру из файла, вся работа с OpenGL происходит в конструкторе.
+ */
 class Texture(private val path: String) {
     private val texture: Int
 
@@ -61,6 +70,9 @@ class Texture(private val path: String) {
         STBImage.stbi_image_free(rawImage)
     }
 
+    /**
+     * Биндит текстуру, помечая её как активную в нулевом слоте текстур в шейдере.
+     */
     fun bind() {
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture)

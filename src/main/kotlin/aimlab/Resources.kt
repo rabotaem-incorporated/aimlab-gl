@@ -83,7 +83,7 @@ object Resources {
         )
 
         mesh.shift(alignShift)
-        return mesh.vao(glfwContext, false)
+        return mesh.vao(false)
     }
 
     lateinit var pepega: Texture

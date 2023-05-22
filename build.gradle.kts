@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.8.21"
+    id("org.jetbrains.dokka") version "1.8.10"
     application
 }
 
@@ -55,6 +56,10 @@ dependencies {
     implementation("kotlin.graphics:glm:0.9.9.1-7")
 
     implementation(project(":client"))
+}
+
+subprojects {
+    apply(plugin = "org.jetbrains.dokka")
 }
 
 tasks.test {

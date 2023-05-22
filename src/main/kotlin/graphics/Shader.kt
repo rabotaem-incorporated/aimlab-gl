@@ -5,11 +5,21 @@ import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 
+/**
+ * Тип шейдера. Используется только для создания шейдерной программы.
+ *
+ * Использование вне [ShaderProgram] не предполагается.
+ */
 enum class ShaderType {
     VERTEX,
     FRAGMENT,
 }
 
+/**
+ * Шейдер. Содержит хэндл полученный из OpenGL. Используется только для создания шейдерной программы.
+ *
+ * Использование вне [ShaderProgram] не предполагается.
+ */
 class Shader(type: ShaderType, path: String) {
     val handle: Int
 
@@ -36,7 +46,14 @@ class Shader(type: ShaderType, path: String) {
     }
 }
 
+/**
+ * Шейдерная программа. Содержит хэндл OpenGL и список uniform-переменных, которые можно устанавливать.
+ *
+ * На данный момент любой контекст содержит не более одной шейдерной программы,
+ * поэтому переключение шейдерных программ не используется.
+ */
 class ShaderProgram(private val handle: Int, private val uniforms: Map<String, Uniform>) {
+     /** Заменяет шейдерную программу на данную */
     fun use() = GL20.glUseProgram(handle)
 
     init {
@@ -45,6 +62,7 @@ class ShaderProgram(private val handle: Int, private val uniforms: Map<String, U
         }
     }
 
+    /** Внутри этого блока гарантируется, что шейдерная программа помечена как используемая. */
     inline fun using(block: ShaderProgram.() -> Unit) {
         use()
         block()
@@ -79,17 +97,54 @@ class ShaderProgram(private val handle: Int, private val uniforms: Map<String, U
     }
 }
 
+/**
+ * Обертка над OpenGL-ссылкой на uniform-переменную в шейдере.
+ *
+ * Чтобы поставить ее значение, нужно вызвать [ShaderProgram.setUniform].
+ *
+ * Использование вне [ShaderProgram] не предполагается.
+ */
 data class Uniform(val location: Int)
 
+/**
+ * Создает шейдерные программы. Предполагается что вызывается через [GlfwContext.compileShaderProgram]
+ *
+ * Пример:
+ * ```kt
+ *     val shaderProgram = GlfwContext.compileShaderProgram {
+ *         vertex("/sample.vert") // Путь относительно resources
+ *         fragment("/sample.frag")
+ *         uniform("projection") // Имена uniform-переменных из шейдеров
+ *         uniform("model")
+ *         uniform("view")
+ *     }
+ * ```
+ *
+ * Чтобы использовать uniform'ы их нужно явно объявить через [uniform].
+ */
 class ShaderProgramBuilder {
     private val shaders = mutableListOf<Shader>()
     private val uniformNames = mutableListOf<String>()
 
-    fun vertex(path: String) = shaders.add(Shader(ShaderType.VERTEX, path))
-    fun fragment(path: String) = shaders.add(Shader(ShaderType.FRAGMENT, path))
+    /** Добавляет вершинный шейдер к программе */
+    fun vertex(path: String) {
+        shaders.add(Shader(ShaderType.VERTEX, path))
+    }
 
-    fun uniform(name: String) = uniformNames.add(name)
+    /** Добавляет фрагментный шейдер к программе */
+    fun fragment(path: String): Boolean {
+        return shaders.add(Shader(ShaderType.FRAGMENT, path))
+    }
 
+    /** Объявляет Uniform-переменную из шейдера, делая ее доступной к использованию */
+    fun uniform(name: String): Boolean {
+        return uniformNames.add(name)
+    }
+
+    /**
+     * Компилирует и слинковывает получившуюся шейдерную программу.
+     * Это происходит автоматически при вызове [GlfwContext.compileShaderProgram]
+     */
     fun build(): ShaderProgram {
         val program = GL20.glCreateProgram()
 
