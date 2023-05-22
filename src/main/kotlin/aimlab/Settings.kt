@@ -10,7 +10,7 @@ object Settings {
     var sensitivity: Vec2 = Vec2(0.00025f, 0.00025f)
     val maxSensitivity = 0.001f
     var time: Float = 3.0f
-    var crosshairColor: Vec3 = Vec3(0.0f, 0.0f, 0.0f)
+    var crosshairColor: CrosshairColor = CrosshairColor.RED
     var crosshairThickness: Float = 0.01f
     var crosshairShape: CrosshairShape = CrosshairShape.CIRCLE
 
@@ -49,6 +49,14 @@ object Settings {
             sensitivity.minusAssign(dSensitivityFast)
         }
     }
+}
+
+enum class CrosshairColor(val color: Vec3) {
+    RED(Vec3(1f, 0f, 0f)),
+    GREEN(Vec3(0f, 1f, 0f)),
+    BLUE(Vec3(0f, 0f, 1f)),
+    BLACK(Vec3(0f, 0f, 0f)),
+    WHITE(Vec3(1f, 1f, 1f)),
 }
 
 enum class CrosshairShape {
