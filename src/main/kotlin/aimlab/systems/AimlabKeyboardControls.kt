@@ -41,11 +41,18 @@ class AimlabKeyboardControls(scene: Scene) : KeyboardControls(scene) {
         }
     }
 
+    fun ToggleFullscreen() {
+        if (scene.tickContext!!.input.getKeyStatus(InputKey.F11) == InputKeyStatus.PRESSED) {
+            scene.tickContext!!.glfwContext.fullscreen = !scene.tickContext!!.glfwContext.fullscreen
+        }
+    }
+
     override fun beforeTick() {
         super.beforeTick()
         IncreaseSensitivity()
         DecreaseSensitivity()
         IncreaseSensitivityFast()
         DecreaseSensitivityFast()
+        ToggleFullscreen()
     }
 }
