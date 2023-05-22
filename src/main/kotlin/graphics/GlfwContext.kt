@@ -19,6 +19,8 @@ data class GlfwSettings(
 class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
     val handle: Long
 
+    var frameCounter: Long = 0
+
     private var shaderProgram: ShaderProgram? = null
         set(value) {
             value?.use()
@@ -68,7 +70,7 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
         GL11.glEnable(GL11.GL_DEPTH_TEST)
         // GL11.glEnable(GL11.GL_CULL_FACE)
         // GL11.glCullFace(GL11.GL_BACK)
-        GL11.glEnable(GL13.GL_MULTISAMPLE);
+        GL11.glEnable(GL13.GL_MULTISAMPLE)
     }
 
     fun compileShaderProgram(shaderProgramBuilder: ShaderProgramBuilder.() -> Unit): ShaderProgram {
@@ -84,6 +86,7 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
 
             time.tick()
             input.tick()
+            frameCounter += 1
         }
     }
 
