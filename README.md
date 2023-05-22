@@ -19,4 +19,8 @@
 
 # TODO:
 
-- Рефакторинг: хранить параметры окна как dataclass внутри `GlfwContext`.
+TODO
+
+# Документация
+
+Нужно собрать `:documentation:dokkaHtml`, и найти `index.html` в `build`
