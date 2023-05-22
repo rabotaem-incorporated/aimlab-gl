@@ -9,6 +9,8 @@ import org.lwjgl.opengl.GL13
 data class WindowSettings(
     val width: Int = 800,
     val height: Int = 600,
+    val xpos: Int = 200,
+    val ypos: Int = 200,
     val title: String = "Window",
 )
 
@@ -25,6 +27,24 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
         private set
 
     var windowHeight = windowSettings.height
+        private set
+
+    var savedWindowWidth = windowSettings.width
+        private set
+
+    var savedWindowHeight = windowSettings.height
+        private set
+
+    var windowPositionX = windowSettings.xpos
+        private set
+
+    var savedWindowPositionX = windowSettings.xpos
+        private set
+
+    var windowPositionY = windowSettings.ypos
+        private set
+
+    var savedWindowPositionY = windowSettings.ypos
         private set
 
     val input = Input(this)
@@ -55,10 +75,17 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
 
         GL11.glViewport(0, 0, windowSettings.width, windowSettings.height)
 
+        GLFW.glfwSetWindowPos(handle, windowPositionX, windowPositionY)
+
         GLFW.glfwSetFramebufferSizeCallback(handle) { _, width, height ->
             windowWidth = width
             windowHeight = height
             GL11.glViewport(0, 0, width, height)
+        }
+
+        GLFW.glfwSetWindowPosCallback(handle) {_, xpos, ypos ->
+            windowPositionX = xpos
+            windowPositionY = ypos
         }
 
         GL11.glEnable(GL11.GL_DEPTH_TEST)
@@ -107,9 +134,14 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
             if (value) {
                 val monitor = GLFW.glfwGetPrimaryMonitor()
                 val mode = GLFW.glfwGetVideoMode(monitor)
+                savedWindowWidth = windowWidth
+                savedWindowHeight = windowHeight
+                savedWindowPositionX = windowPositionX
+                savedWindowPositionY = windowPositionY
                 GLFW.glfwSetWindowMonitor(handle, monitor, 0, 0, mode!!.width(), mode.height(), mode.refreshRate())
             } else {
-                GLFW.glfwSetWindowMonitor(handle, 0, 0, 0, windowWidth, windowHeight, GLFW.GLFW_DONT_CARE)
+
+                GLFW.glfwSetWindowMonitor(handle, 0, savedWindowPositionX, savedWindowPositionY, savedWindowWidth, savedWindowHeight, GLFW.GLFW_DONT_CARE)
             }
             field = value
         }
