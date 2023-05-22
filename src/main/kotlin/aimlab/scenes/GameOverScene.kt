@@ -15,6 +15,7 @@ import glm_.vec3.Vec3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 fun createGameOverScene(score: Int, gameScene: Scene): Scene {
     val scene = Scene(gameScene.glfwContext)
@@ -26,7 +27,8 @@ fun createGameOverScene(score: Int, gameScene: Scene): Scene {
             try {
                 post(
                     Stat(
-                        username = java.lang.System.getProperty("user.name"),
+                        id = UUID.randomUUID().toString(),
+                        username = System.getProperty("user.name"),
                         score = score.toDouble(),
                     )
                 )

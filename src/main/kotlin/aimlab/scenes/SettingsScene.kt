@@ -84,7 +84,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         decimalFormat.format(Settings.sensitivity.x * 1000)
     })
 
-    createVariableSetting(scene, 0.5f, "Game Time", increase = {
+    createVariableSetting(scene, 0.45f, "Game Time", increase = {
         Settings.time = when (Settings.time) {
             3.0f -> 10.0f
             10.0f -> 30.0f
