@@ -56,10 +56,10 @@ class Input(private val context: GlfwContext) {
         return GLFW.glfwGetMouseButton(context.handle, button.code) == GLFW.GLFW_PRESS
     }
 
-    /**
-     * Возвращает статус клавиши.
-     */
+    fun getMouseButtonStatus(button: MouseButton) = mouseButtonStatuses[button]!!
+
     fun getKeyStatus(key: Key) = keyStatuses[key]
+
     /**
      * Обновляет состояние клавиш и мыши.
      *
