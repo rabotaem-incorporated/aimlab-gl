@@ -7,7 +7,7 @@ import engine.components.Button
 import engine.components.DynamicTextRenderer
 import engine.components.TextRenderer
 import engine.systems.Camera2d
-import engine.systems.ExitOnEscape
+import engine.systems.KeyboardControls
 import engine.systems.RenderPipeline
 import engine.systems.UiManager
 import glm_.vec3.Vec3
@@ -65,7 +65,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
     val scene = Scene(glfwContext)
 
     scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(ExitOnEscape(scene))
+    scene.systems.add(KeyboardControls(scene))
     scene.systems.add(Camera2d(scene))
     scene.systems.add(UiManager(scene))
 

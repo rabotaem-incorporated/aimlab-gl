@@ -2,7 +2,7 @@ package engine
 
 import engine.components.Renderer
 import engine.systems.DebugCamera
-import engine.systems.ExitOnEscape
+import engine.systems.KeyboardControls
 import engine.systems.Light
 import engine.systems.RenderPipeline
 import glm_.glm
@@ -16,7 +16,7 @@ fun main() = launchGame {
     val gridModel = loadModel("/unitgrid.obj")
 
     sceneManager.scene.systems.add(RenderPipeline(sceneManager.scene))
-    sceneManager.scene.systems.add(ExitOnEscape(sceneManager.scene))
+    sceneManager.scene.systems.add(KeyboardControls(sceneManager.scene))
     sceneManager.scene.systems.add(Light(sceneManager.scene, Vec3(0.0f, 1.0f, 0.0f)))
 
     // sceneManager.scene.aimlab.components.systems.add(

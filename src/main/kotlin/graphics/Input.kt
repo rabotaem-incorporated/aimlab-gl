@@ -44,6 +44,9 @@ enum class InputKey(val code: Int) {
     A(GLFW.GLFW_KEY_A),
     S(GLFW.GLFW_KEY_S),
     D(GLFW.GLFW_KEY_D),
+    LCTRL(GLFW.GLFW_KEY_LEFT_CONTROL),
+    PLUS(GLFW.GLFW_KEY_EQUAL),
+    MINUS(GLFW.GLFW_KEY_MINUS)
     ;
 }
 

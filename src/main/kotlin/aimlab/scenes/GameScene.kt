@@ -25,7 +25,7 @@ fun createGameScene(glfwContext: GlfwContext): Scene {
     glfwContext.cursorHidden = true
 
     scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(ExitOnEscape(scene))
+    scene.systems.add(KeyboardControls(scene))
     scene.systems.add(CollisionSystem(scene))
     // scene.systems.add(DebugCamera(scene))
     scene.systems.add(FpsCamera(scene))
