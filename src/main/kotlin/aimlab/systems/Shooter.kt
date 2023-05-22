@@ -1,5 +1,6 @@
 package aimlab.systems
 
+import aimlab.Settings
 import aimlab.scenes.createGameOverScene
 import engine.Scene
 import engine.System
@@ -16,7 +17,7 @@ class Shooter(scene: Scene) : System(scene) {
     var score = 0
         private set
 
-    private var duration: Float = 3.0f
+    private var duration: Float = Settings.time
     private var startTime: Float? = null
 
     val timeLeft get() = duration - (scene.time!! - startTime!!)
