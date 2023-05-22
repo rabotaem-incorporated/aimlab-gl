@@ -4,10 +4,14 @@ import engine.Scene
 import engine.System
 import graphics.InputKey
 
-class ExitOnEscape(scene: Scene) : System(scene) {
-    override fun beforeTick() {
+open class KeyboardControls(scene: Scene) : System(scene) {
+    private fun ExitOnEscape() {
         if (scene.tickContext!!.input.isKeyPressed(InputKey.ESCAPE)) {
             scene.tickContext!!.glfwContext.close()
         }
+    }
+
+    override fun beforeTick() {
+        ExitOnEscape()
     }
 }
