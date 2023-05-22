@@ -20,8 +20,8 @@ import glm_.vec3.Vec3
 fun main() = launchGame {
     Resources.load(this)
 
-    // sceneManager.scene = createMainMenu(glfwContext)
-    sceneManager.scene = createSettingsScene(glfwContext)
+    sceneManager.scene = createMainMenu(glfwContext)
+    // sceneManager.scene = createSettingsScene(glfwContext)
     // sceneManager.scene = createGameScene(glfwContext)
     // val prevScene = createGameScene(glfwContext)
     // sceneManager.scene = createGameOverScene(0, prevScene)

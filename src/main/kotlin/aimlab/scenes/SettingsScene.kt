@@ -31,7 +31,6 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
     scene.create {
         addComponent(TextRenderer(this, scene, "Sensitivity", horizontalAlign = TextAlign.END))
         transform.position = Vec3(-0.1f, 0.0f, 0.6f)
-        transform.scale = 0.1f
     }
 
     scene.create {
@@ -43,7 +42,6 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         })
 
         transform.position = Vec3(0.1f, 0.0f, 0.57f)
-        transform.scale = 0.1f
     }
 
     scene.create {
@@ -53,7 +51,6 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         }, horizontalAlign = TextAlign.CENTER))
 
         transform.position = Vec3(0.25f, 0.0f, 0.6f)
-        transform.scale = 0.1f
     }
 
     scene.create {
@@ -65,7 +62,6 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         })
 
         transform.position = Vec3(0.4f, 0.0f, 0.57f)
-        transform.scale = 0.1f
     }
 
     scene.create {
@@ -77,6 +73,17 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         ))
 
         transform.position = Vec3(-1.0f, 0.0f, -0.9f)
+    }
+
+    scene.create {
+        addComponent(Button(
+            this, scene, "Toggle Fullscreen",
+            horizontalAlign = TextAlign.CENTER, onClick = {
+                glfwContext.fullscreen = !glfwContext.fullscreen
+            }
+        ))
+
+        transform.position = Vec3(0.0f, 0.0f, -0.8f)
     }
 
     return scene

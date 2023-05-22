@@ -107,6 +107,18 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
             GLFW.glfwSetInputMode(handle, GLFW.GLFW_CURSOR, if (value) GLFW.GLFW_CURSOR_HIDDEN else GLFW.GLFW_CURSOR_NORMAL)
             field = value
         }
+
+    var fullscreen: Boolean = false
+        set(value) {
+            if (value) {
+                val monitor = GLFW.glfwGetPrimaryMonitor()
+                val mode = GLFW.glfwGetVideoMode(monitor)
+                GLFW.glfwSetWindowMonitor(handle, monitor, 0, 0, mode!!.width(), mode.height(), mode.refreshRate())
+            } else {
+                GLFW.glfwSetWindowMonitor(handle, 0, 0, 0, windowWidth, windowHeight, GLFW.GLFW_DONT_CARE)
+            }
+            field = value
+        }
 }
 
 class FrameContext {
