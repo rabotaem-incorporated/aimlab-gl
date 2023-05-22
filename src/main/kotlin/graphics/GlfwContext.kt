@@ -39,7 +39,7 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, glfwSettings.version.first)
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, glfwSettings.version.second)
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE)
-        GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 16);
+        GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4)
 
         handle = GLFW.glfwCreateWindow(
             windowSettings.width,
