@@ -38,10 +38,6 @@ fun post(stat: Stat) {
         .build()
 
     client.newCall(request).execute().use { response ->
-        println("posted ${response.body?.string()}")
+        println("Successfully posted ${response.body?.string()}")
     }
-}
-
-fun main() = runBlocking {
-
 }

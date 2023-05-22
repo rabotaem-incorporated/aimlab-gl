@@ -6,7 +6,7 @@ import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import graphics.Camera
-import graphics.InputKey
+import graphics.Key
 
 open class SceneCamera(val inner: Camera, scene: Scene) : System(scene) {
     fun getForwardRay(): Ray {
@@ -45,10 +45,10 @@ class DebugCamera(scene: Scene) : SceneCamera(
         val time = scene.tickContext!!.time
 
         val speed = 10.0f
-        if (input.isKeyPressed(InputKey.W)) inner.position.plusAssign(inner.direction * speed * time.delta)
-        if (input.isKeyPressed(InputKey.S)) inner.position.plusAssign(-inner.direction * speed * time.delta)
-        if (input.isKeyPressed(InputKey.D)) inner.position.plusAssign(inner.right * speed * time.delta)
-        if (input.isKeyPressed(InputKey.A)) inner.position.plusAssign(-inner.right * speed * time.delta)
+        if (input.isKeyPressed(Key.W)) inner.position.plusAssign(inner.direction * speed * time.delta)
+        if (input.isKeyPressed(Key.S)) inner.position.plusAssign(-inner.direction * speed * time.delta)
+        if (input.isKeyPressed(Key.D)) inner.position.plusAssign(inner.right * speed * time.delta)
+        if (input.isKeyPressed(Key.A)) inner.position.plusAssign(-inner.right * speed * time.delta)
 
         inner.yaw -= input.mouseDelta.x * 0.005f
         inner.pitch -= input.mouseDelta.y * 0.005f

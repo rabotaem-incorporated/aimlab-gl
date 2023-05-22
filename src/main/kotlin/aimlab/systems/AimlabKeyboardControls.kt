@@ -2,48 +2,42 @@ package aimlab.systems
 
 import engine.systems.KeyboardControls
 import engine.Scene
-import graphics.InputKey
+import graphics.Key
 import aimlab.Settings
-import graphics.InputKeyStatus
+import graphics.KeyButtonStatus
 
 class AimlabKeyboardControls(scene: Scene) : KeyboardControls(scene) {
     fun IncreaseSensitivity() {
-        if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.UP &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.PLUS) == InputKeyStatus.PRESSED) {
+        if (scene.tickContext!!.input.getKeyStatus(Key.LCTRL) == KeyButtonStatus.DOWN &&
+            scene.tickContext!!.input.getKeyStatus(Key.LSHIFT) == KeyButtonStatus.UP &&
+            scene.tickContext!!.input.getKeyStatus(Key.PLUS) == KeyButtonStatus.PRESS) {
             Settings.increaseSensitivity()
         }
     }
 
     fun DecreaseSensitivity() {
-        if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.UP &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.MINUS) == InputKeyStatus.PRESSED) {
+        if (scene.tickContext!!.input.getKeyStatus(Key.LCTRL) == KeyButtonStatus.DOWN &&
+            scene.tickContext!!.input.getKeyStatus(Key.LSHIFT) == KeyButtonStatus.UP &&
+            scene.tickContext!!.input.getKeyStatus(Key.MINUS) == KeyButtonStatus.PRESS) {
             Settings.decreaseSensitivity()
         }
     }
 
     fun IncreaseSensitivityFast() {
-        if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.DOWN &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.PLUS) == InputKeyStatus.PRESSED
+        if (scene.tickContext!!.input.getKeyStatus(Key.LCTRL) == KeyButtonStatus.DOWN &&
+            scene.tickContext!!.input.getKeyStatus(Key.LSHIFT) == KeyButtonStatus.DOWN &&
+            scene.tickContext!!.input.getKeyStatus(Key.PLUS) == KeyButtonStatus.PRESS
         ) {
             Settings.increaseSensitivityFast()
         }
     }
 
     fun DecreaseSensitivityFast() {
-        if (scene.tickContext!!.input.getKeyStatus(InputKey.LCTRL) == InputKeyStatus.DOWN &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.LSHIFT) == InputKeyStatus.DOWN &&
-            scene.tickContext!!.input.getKeyStatus(InputKey.MINUS) == InputKeyStatus.PRESSED
+        if (scene.tickContext!!.input.getKeyStatus(Key.LCTRL) == KeyButtonStatus.DOWN &&
+            scene.tickContext!!.input.getKeyStatus(Key.LSHIFT) == KeyButtonStatus.DOWN &&
+            scene.tickContext!!.input.getKeyStatus(Key.MINUS) == KeyButtonStatus.PRESS
         ) {
             Settings.decreaseSensitivityFast()
-        }
-    }
-
-    fun ToggleFullscreen() {
-        if (scene.tickContext!!.input.getKeyStatus(InputKey.F11) == InputKeyStatus.PRESSED) {
-            scene.tickContext!!.glfwContext.fullscreen = !scene.tickContext!!.glfwContext.fullscreen
         }
     }
 
@@ -53,6 +47,5 @@ class AimlabKeyboardControls(scene: Scene) : KeyboardControls(scene) {
         DecreaseSensitivity()
         IncreaseSensitivityFast()
         DecreaseSensitivityFast()
-        ToggleFullscreen()
     }
 }

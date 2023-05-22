@@ -80,11 +80,11 @@ fun main() = NativeAllocatorContext.new {
                 texture2.bind()
 
                 val speed = 10.0f
-                if (input.isKeyPressed(InputKey.ESCAPE)) close()
-                if (input.isKeyPressed(InputKey.W)) camera.position.plusAssign(camera.direction * speed * time.delta)
-                if (input.isKeyPressed(InputKey.S)) camera.position.plusAssign(-camera.direction * speed * time.delta)
-                if (input.isKeyPressed(InputKey.D)) camera.position.plusAssign(camera.right * speed * time.delta)
-                if (input.isKeyPressed(InputKey.A)) camera.position.plusAssign(-camera.right * speed * time.delta)
+                if (input.isKeyPressed(Key.ESCAPE)) close()
+                if (input.isKeyPressed(Key.W)) camera.position.plusAssign(camera.direction * speed * time.delta)
+                if (input.isKeyPressed(Key.S)) camera.position.plusAssign(-camera.direction * speed * time.delta)
+                if (input.isKeyPressed(Key.D)) camera.position.plusAssign(camera.right * speed * time.delta)
+                if (input.isKeyPressed(Key.A)) camera.position.plusAssign(-camera.right * speed * time.delta)
 
                 camera.yaw += input.mouseDelta.x * 0.005f
                 camera.pitch -= input.mouseDelta.y * 0.005f
