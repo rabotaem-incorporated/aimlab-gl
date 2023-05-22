@@ -21,12 +21,6 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
 
     var frameCounter: Long = 0
 
-    private var shaderProgram: ShaderProgram? = null
-        set(value) {
-            value?.use()
-            field = value
-        }
-
     var windowWidth = windowSettings.width
         private set
 
