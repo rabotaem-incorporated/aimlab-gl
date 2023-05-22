@@ -44,5 +44,15 @@ fun createMainMenu(glfwContext: GlfwContext): Scene {
         transform.position = Vec3(0.0f, 0.0f, -0.1f)
     }
 
+    scene.create {
+        addComponent(Button(
+            this, scene, "Settings",
+            horizontalAlign = TextAlign.CENTER, onClick = {
+                scene.tickContext!!.sceneManager.scene = createSettingsScene(glfwContext)
+            }
+        ))
+        transform.position = Vec3(0.0f, 0.0f, -0.2f)
+    }
+
     return scene
 }

@@ -1,5 +1,6 @@
 package aimlab.systems
 
+import aimlab.Settings
 import engine.Scene
 import engine.systems.SceneCamera
 import glm_.glm
@@ -19,8 +20,8 @@ class FpsCamera(scene: Scene) : SceneCamera(
     override fun beforeTick() {
         val input = scene.tickContext!!.input
 
-        inner.yaw -= input.mouseDelta.x * 0.005f
-        inner.pitch -= input.mouseDelta.y * 0.005f
+        inner.yaw -= input.mouseDelta.x * Settings.sensitivity.x
+        inner.pitch -= input.mouseDelta.y * Settings.sensitivity.y
         inner.pitch = glm.clamp(inner.pitch, -glm.radians(45.0f), glm.radians(45.0f))
         inner.yaw = glm.clamp(inner.yaw, -glm.radians(45.0f), glm.radians(45.0f))
         input.setMousePosition(Vec2(scene.glfwContext.windowWidth / 2, scene.glfwContext.windowHeight / 2))

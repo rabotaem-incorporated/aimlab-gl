@@ -11,6 +11,7 @@ import engine.systems.ExitOnEscape
 import engine.systems.RenderPipeline
 import engine.systems.UiManager
 import glm_.vec3.Vec3
+import graphics.BoundingBox
 import graphics.GlfwContext
 
 fun createSettingsScene(glfwContext: GlfwContext): Scene {
@@ -34,30 +35,48 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
     }
 
     scene.create {
-        addComponent(Button(this, scene, "+", horizontalAlign = TextAlign.END) {
+        addComponent(Button(this, scene, "+", horizontalAlign = TextAlign.END, boundingBox = BoundingBox(
+            Vec3(-1f, 0.0f, -1f),
+            Vec3(1f, 0.0f, 1f)
+        )) {
             Settings.sensitivity.timesAssign(1.1f)
         })
 
-        transform.position = Vec3(0.1f, 0.0f, 0.6f)
+        transform.position = Vec3(0.1f, 0.0f, 0.57f)
         transform.scale = 0.1f
     }
 
     scene.create {
         addComponent(DynamicTextRenderer(this, scene, {
-            Settings.sensitivity.x.toString()
+            val decimalFormat = java.text.DecimalFormat("0.0")
+            decimalFormat.format(Settings.sensitivity.x * 1000)
         }, horizontalAlign = TextAlign.CENTER))
 
-        transform.position = Vec3(0.0f, 0.0f, 0.5f)
+        transform.position = Vec3(0.25f, 0.0f, 0.6f)
         transform.scale = 0.1f
     }
 
     scene.create {
-        addComponent(Button(this, scene, "-", horizontalAlign = TextAlign.END) {
+        addComponent(Button(this, scene, "-", horizontalAlign = TextAlign.START, boundingBox = BoundingBox(
+            Vec3(-1f, 0.0f, -1f),
+            Vec3(1f, 0.0f, 1f)
+        )) {
             Settings.sensitivity.divAssign(1.1f)
         })
 
-        transform.position = Vec3(0.4f, 0.0f, 0.6f)
+        transform.position = Vec3(0.4f, 0.0f, 0.57f)
         transform.scale = 0.1f
+    }
+
+    scene.create {
+        addComponent(Button(
+            this, scene, "Back",
+            horizontalAlign = TextAlign.CENTER, onClick = {
+                scene.tickContext!!.sceneManager.scene = createMainMenu(glfwContext)
+            }
+        ))
+
+        transform.position = Vec3(-1.0f, 0.0f, -0.9f)
     }
 
     return scene

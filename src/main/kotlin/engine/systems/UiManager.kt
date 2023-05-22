@@ -44,6 +44,7 @@ class UiManager(scene: Scene) : System(scene) {
                 } else {
                     if (button.state == Button.State.PRESSED) {
                         button.click()
+                        button.state = Button.State.HIGHLIGHTED
                     } else {
                         button.state = Button.State.HIGHLIGHTED
                     }
