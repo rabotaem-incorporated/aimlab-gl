@@ -83,7 +83,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         Settings.sensitivity.divAssign(1.1f)
     }, {
         val decimalFormat = java.text.DecimalFormat("0.00")
-        decimalFormat.format(max(Settings.sensitivity.x, 0.0f) * 1000)
+        decimalFormat.format(Settings.sensitivity.x * 1000)
     })
 
     createVariableSetting(scene, 0.45f, "Game Time", increase = {

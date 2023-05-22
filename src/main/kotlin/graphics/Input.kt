@@ -5,6 +5,13 @@ import org.lwjgl.glfw.GLFW
 
 class Input(private val context: GlfwContext) {
     private var lastMousePosition = Vec2(0.0f, 0.0f)
+    private var inputKeyStatuses : MutableMap<InputKey, InputKeyStatus> = mutableMapOf()
+
+    init {
+        for (key in InputKey.values()) {
+            inputKeyStatuses[key] = InputKeyStatus.UP
+        }
+    }
 
     var mouseDelta = Vec2(0.0f, 0.0f)
         private set
@@ -30,10 +37,21 @@ class Input(private val context: GlfwContext) {
         return GLFW.glfwGetMouseButton(context.handle, button.code) == GLFW.GLFW_PRESS
     }
 
+    fun getKeyStatus(key: InputKey) = inputKeyStatuses[key]
+
     fun tick() {
         val mousePosition = mousePosition
         mouseDelta = mousePosition - lastMousePosition
         lastMousePosition = mousePosition
+        for (key in InputKey.values()) {
+            if (isKeyPressed(key)) {
+                inputKeyStatuses[key] = if (inputKeyStatuses[key] == InputKeyStatus.UP) InputKeyStatus.PRESSED
+                else InputKeyStatus.DOWN
+            } else {
+                inputKeyStatuses[key] = if (inputKeyStatuses[key] == InputKeyStatus.DOWN) InputKeyStatus.RELEASED
+                else InputKeyStatus.UP
+            }
+        }
     }
 }
 
@@ -45,6 +63,7 @@ enum class InputKey(val code: Int) {
     S(GLFW.GLFW_KEY_S),
     D(GLFW.GLFW_KEY_D),
     LCTRL(GLFW.GLFW_KEY_LEFT_CONTROL),
+    LSHIFT(GLFW.GLFW_KEY_LEFT_SHIFT),
     PLUS(GLFW.GLFW_KEY_EQUAL),
     MINUS(GLFW.GLFW_KEY_MINUS)
     ;
@@ -53,5 +72,13 @@ enum class InputKey(val code: Int) {
 enum class MouseButton(val code: Int) {
     LEFT(GLFW.GLFW_MOUSE_BUTTON_LEFT),
     RIGHT(GLFW.GLFW_MOUSE_BUTTON_RIGHT),
+    ;
+}
+
+enum class InputKeyStatus() {
+    UP,
+    DOWN,
+    PRESSED,
+    RELEASED,
     ;
 }
