@@ -11,7 +11,7 @@ import glm_.vec3.Vec3
 /**
  * Сцена для отладки, можно менять.
  */
-fun main() = launchGame {
+fun main(): Unit = launchGame {
     it.scene = Scene(it)
 
     val model = loadModel("/suzanne.obj")

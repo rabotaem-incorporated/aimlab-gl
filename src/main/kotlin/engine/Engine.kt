@@ -51,7 +51,7 @@ class GameLaunchContext(
  *
  * @param block блок, в котором можно подгрузить модели и текстуры.
  */
-fun launchGame(block: GameLaunchContext.(Game) -> Unit) = NativeAllocatorContext.new {
+fun launchGame(block: GameLaunchContext.(Game) -> Unit): Unit = NativeAllocatorContext.new {
     GlfwContext(
         WindowSettings(),
         GlfwSettings(),

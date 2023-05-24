@@ -64,16 +64,20 @@ class NativeAllocatorContext {
          * Создает новую область вызова аллокатора.
          * При выходе из блока все выделенные буферы будут освобождены.
          */
-        inline fun new(block: NativeAllocator.() -> Unit) {
+        inline fun <T> new(block: NativeAllocator.() -> T): T {
             val allocator = NativeAllocatorContext()
             instanceStack.add(allocator)
-            NativeAllocator(allocator).block()
+            val result = NativeAllocator(allocator).block()
             instanceStack.removeLast().dropAll()
 
-            AllocationStats.run {
-                println("RAM: Allocated: $allocated, freed: $freed, peak: $peakAllocated")
-                println("GPU: Allocated: $gpuAllocated, freed: $gpuFreed, peak: $peakGpuAllocated")
+            if (instanceStack.size == 0) {
+                AllocationStats.run {
+                    println("RAM: Allocated: $allocated, freed: $freed, peak: $peakAllocated")
+                    println("GPU: Allocated: $gpuAllocated, freed: $gpuFreed, peak: $peakGpuAllocated")
+                }
             }
+
+            return result
         }
 
         /**

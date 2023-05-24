@@ -40,11 +40,15 @@ object Resources {
 
     private lateinit var letters: MutableList<Mesh>
 
-    fun getLetter(char: Char): Mesh {
+    private fun getLetter(char: Char): Mesh {
         return letters[char.code]
     }
 
-    fun getText(text: String, horizontalAlign: TextAlign = TextAlign.START, verticalAlign: TextAlign = TextAlign.START): Vao {
+    fun getText(
+        text: String,
+        horizontalAlign: TextAlign = TextAlign.START,
+        verticalAlign: TextAlign = TextAlign.START
+    ): Vao {
         val mesh = Mesh(mutableListOf(), mutableListOf())
         val shift = Vec3()
 
@@ -83,7 +87,9 @@ object Resources {
         )
 
         mesh.shift(alignShift)
-        return mesh.vao(false)
+        return NativeAllocatorContext.new {
+            mesh.vao(false)
+        }
     }
 
     lateinit var pepega: Texture

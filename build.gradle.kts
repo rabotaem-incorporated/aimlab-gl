@@ -71,7 +71,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("aimlab.MainKt")
 }
 
 repositories {
