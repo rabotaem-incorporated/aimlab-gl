@@ -14,13 +14,15 @@ import org.lwjgl.opengl.GL30
  *
  * @param manage Если true, то VAO будет освобожден при выходе из контекста [NativeAllocatorContext]
  */
-class Vao(manage: Boolean = true) {
+class Vao(val manage: Boolean = true) {
     /** OpenGL handle. */
     val handle: Int = GL30.glGenVertexArrays()
     private val vertexBuffers: MutableList<VertexBuffer> = mutableListOf()
     private val elementsBuffer: MutableList<ElementBuffer> = mutableListOf()
 
     init {
+        AllocationStats.gpuAllocated++
+
         if (manage) {
             NativeAllocatorContext.scope {
                 defer { free() }
@@ -31,6 +33,7 @@ class Vao(manage: Boolean = true) {
     /** Освобождает VAO. Если VAO не помечено как `manage`, эту функцию обязательно нужно вызвать */
     fun free() {
         GL30.glDeleteVertexArrays(handle)
+        AllocationStats.gpuFreed++
     }
 
     /**
@@ -71,7 +74,7 @@ class Vao(manage: Boolean = true) {
             usage: Buffer.Usage,
             data: StructArray,
         ): VertexBuffer {
-            val buffer = VertexBuffer(usage, data)
+            val buffer = VertexBuffer(usage, data, vao.manage)
             vao.vertexBuffers.add(buffer)
             return buffer
         }
@@ -83,7 +86,7 @@ class Vao(manage: Boolean = true) {
             usage: Buffer.Usage,
             data: StructArray,
         ): ElementBuffer {
-            val buffer = ElementBuffer(usage, data, ElementBuffer.DrawMode.Triangles)
+            val buffer = ElementBuffer(usage, data, ElementBuffer.DrawMode.Triangles, vao.manage)
             vao.elementsBuffer.add(buffer)
             return buffer
         }

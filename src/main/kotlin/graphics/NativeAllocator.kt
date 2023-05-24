@@ -4,6 +4,31 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.Buffer
 import java.nio.ByteBuffer
 
+object AllocationStats {
+    var peakAllocated = 0
+    var peakGpuAllocated = 0
+
+    var allocated = 0
+        set(value) {
+            field = value
+            if (value - freed > peakAllocated) {
+                peakAllocated = value - gpuFreed
+            }
+        }
+
+    var freed = 0
+
+    var gpuAllocated = 0
+        set(value) {
+            field = value
+            if (value - gpuFreed > peakGpuAllocated) {
+                peakGpuAllocated = value - gpuFreed
+            }
+        }
+
+    var gpuFreed = 0
+}
+
 /**
  * Контекст системного аллокатора.
  *
@@ -44,6 +69,11 @@ class NativeAllocatorContext {
             instanceStack.add(allocator)
             NativeAllocator(allocator).block()
             instanceStack.removeLast().dropAll()
+
+            AllocationStats.run {
+                println("RAM: Allocated: $allocated, freed: $freed, peak: $peakAllocated")
+                println("GPU: Allocated: $gpuAllocated, freed: $gpuFreed, peak: $peakGpuAllocated")
+            }
         }
 
         /**
@@ -61,7 +91,10 @@ class NativeAllocatorContext {
      *  Помечает [buffer] как "нужно освободить при выходе из блока".
      */
     fun manage(buffer: Buffer) {
-        deferred.add { MemoryUtil.memFree(buffer) }
+        deferred.add {
+            MemoryUtil.memFree(buffer)
+            AllocationStats.freed++
+        }
     }
 
     /**
@@ -91,12 +124,17 @@ class NativeAllocator(private val allocator: NativeAllocatorContext) {
     /**
      * Выделяет буфер [ByteBuffer] размера [size].
      */
-    private fun alloc(size: Int): ByteBuffer = MemoryUtil.memAlloc(size).also { allocator.manage(it) }
+    private fun alloc(size: Int): ByteBuffer {
+        AllocationStats.allocated++
+        return MemoryUtil.memAlloc(size).also { allocator.manage(it) }
+    }
 
     /**
      * Выделяет буфер [ByteBuffer] размера равного [data] и копирует в него данные из [data].
      */
-    fun allocAndCopy(data: ByteArray): ByteBuffer = alloc(data.size).put(data).flip()
+    fun allocAndCopy(data: ByteArray): ByteBuffer {
+        return alloc(data.size).put(data).flip()
+    }
 
     /**
      * Откладывает выполнение [action] до выхода из блока.

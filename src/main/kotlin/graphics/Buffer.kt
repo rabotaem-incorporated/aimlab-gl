@@ -16,6 +16,7 @@ abstract class Buffer(
     type: Type,
     usage: Usage,
     rawData: ByteBuffer,
+    manage: Boolean = true,
 ) {
     private var handle: Int = GL15.glGenBuffers()
 
@@ -43,6 +44,8 @@ abstract class Buffer(
     }
 
     init {
+        AllocationStats.gpuAllocated++
+
         val glTarget = when (type) {
             Type.VERTEX -> GL15.GL_ARRAY_BUFFER
             Type.ELEMENT -> GL15.GL_ELEMENT_ARRAY_BUFFER
@@ -57,8 +60,13 @@ abstract class Buffer(
         GL15.glBindBuffer(glTarget, handle)
         GL15.glBufferData(glTarget, rawData, glUsage)
 
-        NativeAllocatorContext.scope {
-            defer { GL15.glDeleteBuffers(handle) }
+        if (manage) {
+            NativeAllocatorContext.scope {
+                defer {
+                    GL15.glDeleteBuffers(handle)
+                    AllocationStats.gpuFreed++
+                }
+            }
         }
     }
 }
@@ -72,7 +80,8 @@ abstract class Buffer(
 class VertexBuffer(
     usage: Usage,
     data: StructArray,
-) : Buffer(Type.VERTEX, usage, data.buffer) {
+    manage: Boolean = true,
+) : Buffer(Type.VERTEX, usage, data.buffer, manage) {
     init {
         for ((index, fragment) in data.layout.fragments.withIndex()) {
             val (glType, size) = when (fragment) {
@@ -107,8 +116,9 @@ class VertexBuffer(
 class ElementBuffer(
     usage: Usage,
     data: StructArray,
-    private val mode: DrawMode
-) : Buffer(Type.ELEMENT, usage, data.buffer) {
+    private val mode: DrawMode,
+    manage: Boolean = true,
+) : Buffer(Type.ELEMENT, usage, data.buffer, manage) {
     /**
      * Как имеено будут отрисовываться данные.
      * Пока что поддерживается только [DrawMode.Triangles].
