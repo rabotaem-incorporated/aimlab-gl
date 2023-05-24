@@ -74,6 +74,7 @@ class NativeAllocatorContext {
                 AllocationStats.run {
                     println("RAM: Allocated: $allocated, freed: $freed, peak: $peakAllocated")
                     println("GPU: Allocated: $gpuAllocated, freed: $gpuFreed, peak: $peakGpuAllocated")
+                    println("Leaked: ${allocated - freed} RAM, ${gpuAllocated - gpuFreed} GPU")
                 }
             }
 

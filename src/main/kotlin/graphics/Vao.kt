@@ -34,6 +34,14 @@ class Vao(val manage: Boolean = true) {
     fun free() {
         GL30.glDeleteVertexArrays(handle)
         AllocationStats.gpuFreed++
+
+        for (buffer in vertexBuffers) {
+            buffer.free()
+        }
+
+        for (buffer in elementsBuffer) {
+            buffer.free()
+        }
     }
 
     /**
@@ -74,7 +82,7 @@ class Vao(val manage: Boolean = true) {
             usage: Buffer.Usage,
             data: StructArray,
         ): VertexBuffer {
-            val buffer = VertexBuffer(usage, data, vao.manage)
+            val buffer = VertexBuffer(usage, data)
             vao.vertexBuffers.add(buffer)
             return buffer
         }
@@ -86,7 +94,7 @@ class Vao(val manage: Boolean = true) {
             usage: Buffer.Usage,
             data: StructArray,
         ): ElementBuffer {
-            val buffer = ElementBuffer(usage, data, ElementBuffer.DrawMode.Triangles, vao.manage)
+            val buffer = ElementBuffer(usage, data, ElementBuffer.DrawMode.Triangles)
             vao.elementsBuffer.add(buffer)
             return buffer
         }
