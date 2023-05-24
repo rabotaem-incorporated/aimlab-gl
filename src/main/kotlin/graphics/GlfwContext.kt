@@ -72,6 +72,8 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
     val input = Input(this)
     val time = Time()
 
+    var currentShaderProgram: ShaderProgram? = null
+
     init {
         assert(GLFW.glfwInit()) { "Failed to initialize GLFW" }
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, glfwSettings.version.first)
@@ -119,7 +121,7 @@ class GlfwContext(windowSettings: WindowSettings, glfwSettings: GlfwSettings) {
      * @param shaderProgramBuilder функция, которая создаёт шейдерную программу, используя [ShaderProgramBuilder].
      */
     fun compileShaderProgram(shaderProgramBuilder: ShaderProgramBuilder.() -> Unit): ShaderProgram {
-        return ShaderProgramBuilder().apply(shaderProgramBuilder).build()
+        return ShaderProgramBuilder().apply(shaderProgramBuilder).build(this)
     }
 
     inline fun mainLoop(loop: FrameContext.() -> Unit) {

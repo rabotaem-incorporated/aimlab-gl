@@ -2,68 +2,62 @@ package aimlab.scenes
 
 import aimlab.TextAlign
 import aimlab.systems.AimlabKeyboardControls
-import engine.Scene
-import engine.components.Button
-import engine.components.TextRenderer
+import engine.Game
+import aimlab.components.Button
+import aimlab.components.TextRenderer
 import engine.systems.Camera2d
-import engine.systems.KeyboardControls
 import engine.systems.RenderPipeline
-import engine.systems.UiManager
+import aimlab.systems.UiManager
 import glm_.vec3.Vec3
-import graphics.GlfwContext
 
-fun createMainMenu(glfwContext: GlfwContext): Scene {
-    val scene = Scene(glfwContext)
+fun createMainMenu(game: Game) = game.newScene {
+    systems.add(RenderPipeline(this))
+    systems.add(AimlabKeyboardControls(this))
+    systems.add(Camera2d(this))
+    systems.add(UiManager(this))
 
-    scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(AimlabKeyboardControls(scene))
-    scene.systems.add(Camera2d(scene))
-    scene.systems.add(UiManager(scene))
-
-    scene.create {
-        addComponent(TextRenderer(this, scene, "\"Aimlab\"", horizontalAlign = TextAlign.CENTER))
+    create {
+        addComponent(TextRenderer(this, "\"Aimlab\"", horizontalAlign = TextAlign.CENTER))
         transform.position = Vec3(0.0f, 0.0f, 0.5f)
         transform.scale = 0.2f
     }
 
-    scene.create {
+    create {
         addComponent(Button(
-            this, scene, "Play",
+            this, "Play",
             horizontalAlign = TextAlign.CENTER, onClick = {
-                scene.tickContext!!.sceneManager.scene = createGameScene(glfwContext)
+                createGameScene(game)
             }
         ))
     }
 
-    scene.create {
+    create {
         addComponent(Button(
-            this, scene, "Leaderboard",
+            this, "Leaderboard",
             horizontalAlign = TextAlign.CENTER, onClick = {
-                scene.tickContext!!.sceneManager.scene = createLeaderboardScene(glfwContext)
+                createLeaderboardScene(game)
             }
         ))
         transform.position = Vec3(0.0f, 0.0f, -0.1f)
     }
 
-    scene.create {
+    create {
         addComponent(Button(
-            this, scene, "Settings",
+            this, "Settings",
             horizontalAlign = TextAlign.CENTER, onClick = {
-                scene.tickContext!!.sceneManager.scene = createSettingsScene(glfwContext)
+                createSettingsScene(game)
             }
         ))
         transform.position = Vec3(0.0f, 0.0f, -0.2f)
     }
 
-    scene.create {
+    create {
         addComponent(Button(
-            this, scene, "Quit W",
+            this, "Quit W",
             horizontalAlign = TextAlign.CENTER, onClick = {
-                scene.tickContext!!.glfwContext.close()
+                game.glfwContext.close()
             }
         ))
         transform.position = Vec3(0.0f, 0.0f, -0.3f)
     }
-
-    return scene
 }

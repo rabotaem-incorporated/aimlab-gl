@@ -1,19 +1,25 @@
-package engine.components
+package aimlab.components
 
 import aimlab.TextAlign
 import engine.Component
 import engine.Entity
-import engine.Scene
 import engine.SolidColorMaterial
-import engine.systems.UiManager
+import engine.components.UiRenderer
+import aimlab.systems.UiManager
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import glm_.vec4.swizzle.xyz
 import graphics.BoundingBox
 
+/**
+ * Элемент графического интерфейса, на который можно нажать. Меняет цвет при наведении и нажатии.
+ *
+ * @param text Текст, который будет отображаться на кнопке.
+ * @param boundingBox Ограничивающий прямоугольник кнопки в локальных координатах.
+ * @param onClick Функция, которая будет вызвана при нажатии на кнопку.
+ */
 class Button(
     entity: Entity,
-    scene: Scene,
     text: String,
     boundingBox: BoundingBox = BoundingBox(
         Vec3(-5f, 0.0f, -0.5f),
@@ -22,7 +28,7 @@ class Button(
     horizontalAlign: TextAlign = TextAlign.START,
     verticalAlign: TextAlign = TextAlign.CENTER,
     private val onClick: () -> Unit
-) : Component(entity, scene) {
+) : Component(entity) {
     private lateinit var renderer: UiRenderer
     private lateinit var uiManager: UiManager
     private lateinit var handle: UiManager.ButtonHandle
@@ -35,7 +41,7 @@ class Button(
     )
 
     init {
-        entity.addComponent(TextRenderer(entity, scene, text, horizontalAlign, verticalAlign))
+        entity.addComponent(TextRenderer(entity, text, horizontalAlign, verticalAlign))
     }
 
     override fun onCreate() {

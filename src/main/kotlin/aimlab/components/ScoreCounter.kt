@@ -3,10 +3,8 @@ package aimlab.components
 import aimlab.systems.Shooter
 import engine.Component
 import engine.Entity
-import engine.Scene
-import engine.components.TextRenderer
 
-class ScoreCounter(entity: Entity, scene: Scene) : Component(entity, scene) {
+class ScoreCounter(entity: Entity) : Component(entity) {
     private lateinit var shooter: Shooter
     private lateinit var textRenderer: TextRenderer
 

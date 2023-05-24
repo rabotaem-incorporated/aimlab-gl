@@ -10,95 +10,102 @@ import aimlab.components.Timer
 import aimlab.systems.AimlabKeyboardControls
 import aimlab.systems.FpsCamera
 import aimlab.systems.Shooter
-import engine.LitTexturedMaterial
-import engine.Scene
-import engine.SolidColorMaterial
-import engine.TexturedMaterial
+import engine.*
 import engine.components.Renderer
-import engine.components.TextRenderer
+import aimlab.components.TextRenderer
 import engine.components.UiRenderer
 import engine.systems.*
 import glm_.quat.Quat
 import glm_.vec3.Vec3
-import graphics.GlfwContext
 
-fun createGameScene(glfwContext: GlfwContext): Scene {
-    val scene = Scene(glfwContext)
+fun createGameScene(game: Game): Unit = game.newScene {
+    game.glfwContext.cursorHidden = true
 
-    glfwContext.cursorHidden = true
+    systems.add(RenderPipeline(this))
+    systems.add(AimlabKeyboardControls(this))
+    systems.add(RayCastingSystem(this))
+    systems.add(FpsCamera(this))
+    systems.add(Shooter(this))
+    systems.add(Light(this, Vec3(0.0f, 1.0f, 0.0f)))
 
-    scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(AimlabKeyboardControls(scene))
-    scene.systems.add(CollisionSystem(scene))
-    // scene.systems.add(DebugCamera(scene))
-    scene.systems.add(FpsCamera(scene))
-    scene.systems.add(Shooter(scene))
-    scene.systems.add(Light(scene, Vec3(0.0f, 1.0f, 0.0f)))
-
-    scene.create {
-        addComponent(BallSpawner(scene, this))
+    create {
+        addComponent(BallSpawner(this))
 
         transform.position = Vec3(0.0f, 0.0f, 10.0f)
     }
 
-    scene.create {
-        addComponent(Renderer(this, scene, SolidColorMaterial(Vec3(0.5, 0.7f, 1.0f)), Resources.ball))
+    create {
+        addComponent(
+            Renderer(
+                this,
+                SolidColorMaterial(Vec3(0.5, 0.7f, 1.0f)),
+                Resources.ball
+            )
+        )
         transform.scale = 100.0f
     }
 
-    scene.create {
-        addComponent(Renderer(this, scene, TexturedMaterial(Resources.pepega), Resources.quad))
+    create {
+        addComponent(Renderer(this, TexturedMaterial(Resources.pepega), Resources.quad))
         transform.position = Vec3(0.0f, 0.0f, 20.0f)
         transform.rotation = Quat.quatLookAt(Vec3(0.0, -1.0, 0.0f), Vec3(0.0f, 0.0f, 1.0f))
         transform.scale = 10.0f
     }
 
-    scene.create {
-        addComponent(Renderer(this, scene, LitTexturedMaterial(
-            Resources.sand,
-            Vec3(0.2f, 0.2f, 0.2f),
-            Vec3(0.8f, 0.8f, 0.8f),
-            Vec3(0.2f, 0.2f, 0.2f),
-            1.0f
-        ), Resources.terrain))
+    create {
+        addComponent(
+            Renderer(
+                this, LitTexturedMaterial(
+                    Resources.sand,
+                    Vec3(0.2f, 0.2f, 0.2f),
+                    Vec3(0.8f, 0.8f, 0.8f),
+                    Vec3(0.2f, 0.2f, 0.2f),
+                    1.0f
+                ), Resources.terrain
+            )
+        )
         transform.position = Vec3(0.0f, -6.0f, 0.0f)
         transform.scale = 2.0f
     }
 
-    scene.create {
-        addComponent(TextRenderer(this, scene, "", horizontalAlign = TextAlign.START))
-        addComponent(ScoreCounter(this, scene))
+    create {
+        addComponent(TextRenderer(this, "", horizontalAlign = TextAlign.START))
+        addComponent(ScoreCounter(this))
         transform.position = Vec3(0.3f, 0.0f, 0.9f)
     }
 
-    scene.create {
-        addComponent(TextRenderer(this, scene, "", horizontalAlign = TextAlign.END))
-        addComponent(Timer(this, scene))
+    create {
+        addComponent(TextRenderer(this, "", horizontalAlign = TextAlign.END))
+        addComponent(Timer(this))
         transform.position = Vec3(-0.3f, 0.0f, 0.9f)
     }
 
     when (Settings.crosshairShape) {
         CrosshairShape.SQUARE -> {
-            scene.create {
-                addComponent(UiRenderer(this, scene, Resources.quad, SolidColorMaterial(Settings.crosshairColor.color)))
+            create {
+                addComponent(UiRenderer(this, Resources.quad, SolidColorMaterial(Settings.crosshairColor.color)))
                 transform.scale = Settings.crosshairThickness
             }
         }
 
         CrosshairShape.CIRCLE -> {
-            scene.create {
-                addComponent(UiRenderer(this, scene, Resources.ball, SolidColorMaterial(Settings.crosshairColor.color)))
+            create {
+                addComponent(UiRenderer(this, Resources.ball, SolidColorMaterial(Settings.crosshairColor.color)))
                 transform.scale = Settings.crosshairThickness
             }
         }
 
         CrosshairShape.CROSS -> {
-            scene.create {
-                addComponent(UiRenderer(this, scene, Resources.coords, SolidColorMaterial(Settings.crosshairColor.color)))
+            create {
+                addComponent(
+                    UiRenderer(
+                        this,
+                        Resources.coords,
+                        SolidColorMaterial(Settings.crosshairColor.color)
+                    )
+                )
                 transform.scale = Settings.crosshairThickness
             }
         }
     }
-
-    return scene
 }

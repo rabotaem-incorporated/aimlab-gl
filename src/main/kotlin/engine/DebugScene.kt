@@ -8,16 +8,19 @@ import engine.systems.RenderPipeline
 import glm_.glm
 import glm_.vec3.Vec3
 
+/**
+ * Сцена для отладки, можно менять.
+ */
 fun main() = launchGame {
-    sceneManager.scene = Scene(glfwContext)
+    it.scene = Scene(it)
 
     val model = loadModel("/suzanne.obj")
     val coordsModel = loadModel("/coords.obj")
     val gridModel = loadModel("/unitgrid.obj")
 
-    sceneManager.scene.systems.add(RenderPipeline(sceneManager.scene))
-    sceneManager.scene.systems.add(KeyboardControls(sceneManager.scene))
-    sceneManager.scene.systems.add(Light(sceneManager.scene, Vec3(0.0f, 1.0f, 0.0f)))
+    it.scene.systems.add(RenderPipeline(it.scene))
+    it.scene.systems.add(KeyboardControls(it.scene))
+    it.scene.systems.add(Light(it.scene, Vec3(0.0f, 1.0f, 0.0f)))
 
     // sceneManager.scene.aimlab.components.systems.add(
     //     SceneCamera(
@@ -31,25 +34,25 @@ fun main() = launchGame {
     //     )
     // )
 
-    sceneManager.scene.systems.add(DebugCamera(sceneManager.scene))
+    it.scene.systems.add(DebugCamera(it.scene))
 
-    val entity = sceneManager.scene.create {
-        addComponent(Renderer(this, scene, SolidColorMaterial(Vec3(1.0f, 0.0f, 0.0f)), model))
+    val entity = it.scene.create {
+        addComponent(Renderer(this, SolidColorMaterial(Vec3(1.0f, 0.0f, 0.0f)), model))
     }
 
     entity.transform.position = Vec3(-5.0f, -5.0f, -5.0f)
 
 
-    sceneManager.scene.create {
-        addComponent(Renderer(this, scene, SolidColorMaterial(Vec3(1.0f, 1.0f, 1.0f)), coordsModel))
+    it.scene.create {
+        addComponent(Renderer(this, SolidColorMaterial(Vec3(1.0f, 1.0f, 1.0f)), coordsModel))
     }
 
-    sceneManager.scene.create {
-        addComponent(Renderer(this, scene, SolidColorMaterial(Vec3(1.0f, 1.0f, 1.0f)), gridModel))
+    it.scene.create {
+        addComponent(Renderer(this, SolidColorMaterial(Vec3(1.0f, 1.0f, 1.0f)), gridModel))
     }
 
-    val coords = sceneManager.scene.create {
-        addComponent(Renderer(this, scene, SolidColorMaterial(Vec3(1.0f, 1.0f, 1.0f)), coordsModel))
+    val coords = it.scene.create {
+        addComponent(Renderer(this, SolidColorMaterial(Vec3(1.0f, 1.0f, 1.0f)), coordsModel))
     }
 
     coords.transform.position = Vec3(1.0f, 2.0f, 3.0f)
@@ -57,8 +60,8 @@ fun main() = launchGame {
     coords.transform.rotation = glm.quatLookAt(Vec3(1.0f, 1.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f))
 
 
-    val coords2 = sceneManager.scene.create(coords) {
-        addComponent(Renderer(this, scene, SolidColorMaterial(Vec3(1.0f, 0.0f, 1.0f)), coordsModel))
+    val coords2 = it.scene.create(coords) {
+        addComponent(Renderer(this, SolidColorMaterial(Vec3(1.0f, 0.0f, 1.0f)), coordsModel))
     }
 
     coords2.transform.position = Vec3(8.0f, 0.0f, 0.0f)

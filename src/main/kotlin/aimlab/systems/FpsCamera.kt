@@ -13,17 +13,17 @@ class FpsCamera(scene: Scene) : SceneCamera(
         Vec3(0.0f, 0.0f, 0.0f),
         0.0f, 0.0f,
         60.0f,
-        scene.glfwContext,
+        scene.game.glfwContext,
     ),
     scene,
 ) {
     override fun beforeTick() {
-        val input = scene.tickContext!!.input
+        val input = input
 
         inner.yaw -= input.mouseDelta.x * Settings.sensitivity.x
         inner.pitch -= input.mouseDelta.y * Settings.sensitivity.y
         inner.pitch = glm.clamp(inner.pitch, -glm.radians(45.0f), glm.radians(45.0f))
         inner.yaw = glm.clamp(inner.yaw, -glm.radians(45.0f), glm.radians(45.0f))
-        input.setMousePosition(Vec2(scene.glfwContext.windowWidth / 2, scene.glfwContext.windowHeight / 2))
+        input.setMousePosition(Vec2(game.glfwContext.windowWidth / 2, game.glfwContext.windowHeight / 2))
     }
 }

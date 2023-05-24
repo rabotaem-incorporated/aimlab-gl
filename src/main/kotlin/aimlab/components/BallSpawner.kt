@@ -3,20 +3,16 @@ package aimlab.components
 import aimlab.Resources
 import engine.Component
 import engine.Entity
-import engine.Scene
 import engine.LitMaterial
 import engine.components.Renderer
 import glm_.Java.Companion.glm
-import glm_.mat2x2.Mat2
-import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.swizzle.xyz
-import glm_.vec4.Vec4
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
-class BallSpawner(scene: Scene, entity: Entity) : Component(entity, scene) {
+class BallSpawner(entity: Entity) : Component(entity) {
     private var targetCount: Int = 5
     private val spread = 3.0f
     private val size = 0.2f
@@ -33,7 +29,7 @@ class BallSpawner(scene: Scene, entity: Entity) : Component(entity, scene) {
 
                 addComponent(
                     Renderer(
-                        this, scene, LitMaterial(
+                        this, LitMaterial(
                             Vec3(r.x, g.x, b.x),
                             Vec3(0.6f, 0.6f, 0.6f),
                             Vec3(0.6f, 0.6f, 0.5f),
@@ -43,7 +39,7 @@ class BallSpawner(scene: Scene, entity: Entity) : Component(entity, scene) {
                     )
                     // Renderer(this, scene, SolidColorMaterial(Vec3(1.0f, 0.0f, 1.0f)), Resources.ball)
                 )
-                addComponent(Ball(this, scene))
+                addComponent(Ball(this))
             }
 
             entity.transform.position = Vec3(

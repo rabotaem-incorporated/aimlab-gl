@@ -2,13 +2,12 @@ package aimlab.components
 
 import engine.Component
 import engine.Entity
-import engine.Scene
 import engine.components.SphereCollider
 import glm_.vec3.Vec3
 
-class Ball(entity: Entity, scene: Scene) : Component(entity, scene) {
+class Ball(entity: Entity) : Component(entity) {
     override fun onCreate() {
-        entity.addComponent(SphereCollider(entity, scene, 1.0f))
+        entity.addComponent(SphereCollider(entity, 1.0f))
     }
 
     override fun onTick() {

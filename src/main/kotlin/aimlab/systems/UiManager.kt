@@ -1,8 +1,9 @@
-package engine.systems
+package aimlab.systems
 
 import engine.Scene
 import engine.System
-import engine.components.Button
+import aimlab.components.Button
+import engine.systems.Camera2d
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -13,6 +14,11 @@ import glm_.vec4.swizzle.xy
 import graphics.GlfwContext
 import graphics.MouseButton
 
+/**
+ * Система, которая отвечает за обработку UI-элементов, например, кнопок.
+ *
+ * @see Button
+ */
 class UiManager(scene: Scene) : System(scene) {
     private val buttons = mutableListOf<Button?>()
     private lateinit var camera: Camera2d
@@ -21,14 +27,17 @@ class UiManager(scene: Scene) : System(scene) {
         camera = scene.query()
     }
 
+    /**
+     * Проходит по всем кнопкам и обрабатывает нажатия.
+     */
     override fun afterTick() {
         for (button in buttons) {
             if (button == null) continue
 
-            val mousePos = scene.glfwContext.input.mousePosition
-            val windowSize = Vec2(scene.glfwContext.windowWidth, scene.glfwContext.windowHeight)
+            val mousePos = scene.game.input.mousePosition
+            val windowSize = Vec2(glfwContext.windowWidth, glfwContext.windowHeight)
             val mouseNdc = (mousePos / windowSize) * 2.0f - 1.0f
-            val transformMatrix = uiProjectionViewMatrix(scene.glfwContext)
+            val transformMatrix = uiProjectionViewMatrix(glfwContext)
 
             val mouseUiWorld = glm.inverse(transformMatrix) * Vec4(mouseNdc.x, 0.0f, mouseNdc.y, 1.0f)
             val mouseUiWorldXZ = mouseUiWorld.xy
@@ -39,7 +48,7 @@ class UiManager(scene: Scene) : System(scene) {
 
             if (mouseUiWorldXZ.x >= buttonMinXZ.x && mouseUiWorldXZ.x <= buttonMaxXZ.x &&
                 mouseUiWorldXZ.y >= buttonMinXZ.y && mouseUiWorldXZ.y <= buttonMaxXZ.y) {
-                if (scene.glfwContext.input.isMouseButtonPressed(MouseButton.LEFT)) {
+                if (glfwContext.input.isMouseButtonPressed(MouseButton.LEFT)) {
                     button.state = Button.State.PRESSED
                 } else {
                     if (button.state == Button.State.PRESSED) {

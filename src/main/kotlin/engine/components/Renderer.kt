@@ -3,20 +3,23 @@ package engine.components
 import engine.Component
 import engine.Entity
 import engine.Material
-import engine.Scene
 import engine.systems.Light
 import engine.systems.RenderPipeline
 import engine.systems.SceneCamera
-import glm_.mat4x4.Mat4
 import graphics.ShaderProgram
 import graphics.Vao
 
+/**
+ * Общий компонент для отрисовки объекта.
+ *
+ * Позиция и прочие свойства объекта в глобальных координатах вычисляется по матрице трансформации,
+ * из [Transform].
+ */
 class Renderer(
     entity: Entity,
-    scene: Scene,
-    val material: Material,
-    var model: Vao,
-) : Component(entity, scene) {
+    private val material: Material,
+    private var model: Vao,
+) : Component(entity) {
     private lateinit var pipeline: RenderPipeline
     private lateinit var camera: SceneCamera
     private lateinit var light: Light

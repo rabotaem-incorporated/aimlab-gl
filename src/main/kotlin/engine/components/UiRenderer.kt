@@ -6,14 +6,17 @@ import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 import graphics.ShaderProgram
 import graphics.Vao
-import kotlin.math.sin
 
+/**
+ * Отрисовывает элемент графического интерфейса.
+ *
+ * В отличие от [Renderer], не опирается на камеру, а использует матрицу проекции и вида, специально для UI.
+ */
 open class UiRenderer(
     entity: Entity,
-    scene: Scene,
     var model: Vao,
     var material: Material = SolidColorMaterial(Vec3(1.0f, 1.0f, 1.0f)),
-) : Component(entity, scene) {
+) : Component(entity) {
     private lateinit var renderPipeline: RenderPipeline
 
     override fun onCreate() {

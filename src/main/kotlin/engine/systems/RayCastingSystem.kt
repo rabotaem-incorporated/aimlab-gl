@@ -9,20 +9,37 @@ import glm_.vec3.Vec3
 data class Ray(val origin: Vec3, val direction: Vec3)
 data class RayHit(val entity: Entity, val point: Vec3, val normal: Vec3, val distance: Float)
 
-class CollisionSystem(scene: Scene) : System(scene) {
+/**
+ * Эта система хранит все коллайдеры и позволяет проверять пересечения луча с коллайдерами.
+ *
+ * @see Collider
+ */
+class RayCastingSystem(scene: Scene) : System(scene) {
     private val colliders = mutableListOf<Collider?>()
 
+    /**
+     * Идентификатор коллайдера в системе.
+     */
     data class ColliderHandle(val id: Int)
 
+    /**
+     * Добавляет коллайдер в систему. Предполагается, что вызывается только в [engine.components.Collider.onCreate].
+     */
     fun addCollider(collider: Collider): ColliderHandle {
         colliders.add(collider)
         return ColliderHandle(colliders.size - 1)
     }
 
+    /**
+     * Удаляет коллайдер из системы. Предполагается, что вызывается только в [engine.components.Collider.onDestroy].
+     */
     fun removeCollider(collider: ColliderHandle) {
         colliders[collider.id] = null
     }
 
+    /**
+     * Проверяет пересечение луча с коллайдерами.
+     */
     fun rayCast(ray: Ray): RayHit? {
         var bestHit: RayHit? = null
         for (collider in colliders) {

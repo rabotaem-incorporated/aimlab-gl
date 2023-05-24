@@ -1,17 +1,22 @@
-package engine.components
+package aimlab.components
 
 import aimlab.Resources
 import aimlab.TextAlign
 import engine.*
+import engine.components.UiRenderer
 import graphics.Vao
 
+/**
+ * Отрисовывает текст, внутри прикручивает [UiRenderer].
+ *
+ * @property text Текст, который будет отрисован. Можно менять во время работы программы.
+ */
 class TextRenderer(
     entity: Entity,
-    scene: Scene,
     text: String,
     private val horizontalAlign: TextAlign = TextAlign.START,
     private val verticalAlign: TextAlign = TextAlign.START,
-) : Component(entity, scene) {
+) : Component(entity) {
     private var textVao: Vao? = null
     private val startString = text
 
@@ -35,7 +40,7 @@ class TextRenderer(
         uiRenderer = entity.query()
 
         if (uiRenderer == null) {
-            uiRenderer = entity.addComponent(UiRenderer(entity, scene, textVao!!))
+            uiRenderer = entity.addComponent(UiRenderer(entity, textVao!!))
         }
 
         entity.transform.scale = 0.1f

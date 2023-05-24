@@ -1,18 +1,27 @@
 package engine.systems
 
+import aimlab.systems.UiManager
 import engine.Scene
 import engine.System
 import engine.components.Renderer
 import engine.components.UiRenderer
-import glm_.glm
-import glm_.vec3.Vec3
 
+/**
+ * Графический конвейер, который рендерит все объекты в сцене.
+ *
+ * По сути просто хранит ссылки на все рендереры и вызывает их методы [Renderer.render], в нужном порядке.
+ *
+ * Если объект надо нарисовать, каждый тик необходимо вызвать [query] из компонента [Renderer] (или аналога).
+ *
+ * Перед тиком список рендереров очищается.
+ */
 class RenderPipeline(scene: Scene) : System(scene) {
     private val toRender = mutableListOf<Renderer>()
     private val uiToRender = mutableListOf<UiRenderer>()
 
     override fun beforeTick() {
         toRender.clear()
+        uiToRender.clear()
     }
 
     fun query(renderer: Renderer) {
@@ -24,19 +33,18 @@ class RenderPipeline(scene: Scene) : System(scene) {
     }
 
     override fun afterTick() {
-        scene.tickContext?.draw {
-            enableDepthTest()
+        game.glfwContext.apply {
+            val shaderProgram = currentShaderProgram!!
+            shaderProgram.enableDepthTest()
 
             for (renderer in toRender) {
-                renderer.render(this)
+                renderer.render(shaderProgram)
             }
 
-            disableDepthTest()
-
-            val aspectRatio = scene.glfwContext.windowWidth.toFloat() / scene.glfwContext.windowHeight.toFloat()
+            shaderProgram.disableDepthTest()
 
             for (renderer in uiToRender) {
-                renderer.render(this, UiManager.uiProjectionViewMatrix(scene.glfwContext))
+                renderer.render(shaderProgram, UiManager.uiProjectionViewMatrix(game.glfwContext))
             }
         }
     }

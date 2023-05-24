@@ -5,21 +5,26 @@ import engine.System
 import graphics.Key
 import graphics.KeyButtonStatus
 
+/**
+ * Общие настройки управления, полезные для любой игры.
+ *
+ * Можно расширять, добавляя свои методы.
+ */
 open class KeyboardControls(scene: Scene) : System(scene) {
-    private fun ExitOnEscape() {
-        if (scene.tickContext!!.input.isKeyPressed(Key.ESCAPE)) {
-            scene.tickContext!!.glfwContext.close()
+    private fun exitOnEscape() {
+        if (input.isKeyPressed(Key.ESCAPE)) {
+            game.glfwContext.close()
         }
     }
 
-    fun ToggleFullscreen() {
-        if (scene.tickContext!!.input.getKeyStatus(Key.F11) == KeyButtonStatus.PRESS) {
-            scene.tickContext!!.glfwContext.fullscreen = !scene.tickContext!!.glfwContext.fullscreen
+    private fun toggleFullscreen() {
+        if (input.getKeyStatus(Key.F11) == KeyButtonStatus.PRESS) {
+            game.glfwContext.fullscreen = !game.glfwContext.fullscreen
         }
     }
 
     override fun beforeTick() {
-        ExitOnEscape()
-        ToggleFullscreen()
+        exitOnEscape()
+        toggleFullscreen()
     }
 }

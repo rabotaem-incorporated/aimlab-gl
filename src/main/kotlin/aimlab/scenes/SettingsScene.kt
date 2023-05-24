@@ -5,16 +5,16 @@ import aimlab.CrosshairShape
 import aimlab.Settings
 import aimlab.TextAlign
 import aimlab.systems.AimlabKeyboardControls
+import engine.Game
 import engine.Scene
-import engine.components.Button
-import engine.components.DynamicTextRenderer
-import engine.components.TextRenderer
+import aimlab.components.Button
+import aimlab.components.DynamicTextRenderer
+import aimlab.components.TextRenderer
 import engine.systems.Camera2d
 import engine.systems.RenderPipeline
-import engine.systems.UiManager
+import aimlab.systems.UiManager
 import glm_.vec3.Vec3
 import graphics.BoundingBox
-import graphics.GlfwContext
 import kotlin.math.max
 import kotlin.math.min
 
@@ -27,13 +27,13 @@ fun createVariableSetting(
     getValue: () -> String
 ) {
     scene.create {
-        addComponent(TextRenderer(this, scene, name, horizontalAlign = TextAlign.END))
+        addComponent(TextRenderer(this, name, horizontalAlign = TextAlign.END))
         transform.position = Vec3(-0.1f, 0.0f, y)
     }
 
     scene.create {
         addComponent(Button(
-            this, scene, "<", horizontalAlign = TextAlign.END, boundingBox = BoundingBox(
+            this, "<", horizontalAlign = TextAlign.END, boundingBox = BoundingBox(
                 Vec3(-1f, 0.0f, -1f),
                 Vec3(1f, 0.0f, 1f)
             )
@@ -45,14 +45,14 @@ fun createVariableSetting(
     }
 
     scene.create {
-        addComponent(DynamicTextRenderer(this, scene, getValue, horizontalAlign = TextAlign.CENTER))
+        addComponent(DynamicTextRenderer(this, getValue, horizontalAlign = TextAlign.CENTER))
 
         transform.position = Vec3(0.25f, 0.0f, y)
     }
 
     scene.create {
         addComponent(Button(
-            this, scene, ">", horizontalAlign = TextAlign.START, boundingBox = BoundingBox(
+            this, ">", horizontalAlign = TextAlign.START, boundingBox = BoundingBox(
                 Vec3(-1f, 0.0f, -1f),
                 Vec3(1f, 0.0f, 1f)
             )
@@ -65,21 +65,19 @@ fun createVariableSetting(
 
 }
 
-fun createSettingsScene(glfwContext: GlfwContext): Scene {
-    val scene = Scene(glfwContext)
+fun createSettingsScene(game: Game): Unit = game.newScene {
+    systems.add(RenderPipeline(this))
+    systems.add(AimlabKeyboardControls(this))
+    systems.add(Camera2d(this))
+    systems.add(UiManager(this))
 
-    scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(AimlabKeyboardControls(scene))
-    scene.systems.add(Camera2d(scene))
-    scene.systems.add(UiManager(scene))
-
-    scene.create {
-        addComponent(TextRenderer(this, scene, "Settings", horizontalAlign = TextAlign.CENTER))
+    create {
+        addComponent(TextRenderer(this, "Settings", horizontalAlign = TextAlign.CENTER))
         transform.position = Vec3(0.0f, 0.0f, 0.8f)
         transform.scale = 0.2f
     }
 
-    createVariableSetting(scene, 0.6f, "Sensitivity", increase = {
+    createVariableSetting(this, 0.6f, "Sensitivity", increase = {
         Settings.increaseSensitivity()
     }, decrease = {
         Settings.decreaseSensitivity()
@@ -88,7 +86,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         decimalFormat.format(Settings.sensitivity.x * 1000)
     })
 
-    createVariableSetting(scene, 0.45f, "Game Time", increase = {
+    createVariableSetting(this, 0.45f, "Game Time", increase = {
         Settings.time = when (Settings.time) {
             3.0f -> 10.0f
             10.0f -> 30.0f
@@ -106,7 +104,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         Settings.time.toInt().toString()
     })
 
-    createVariableSetting(scene, 0.3f, "Crosshair Thickness", increase = {
+    createVariableSetting(this, 0.3f, "Crosshair Thickness", increase = {
         Settings.crosshairThickness = min(Settings.crosshairThickness + 0.001f, 0.1f)
     }, decrease = {
         Settings.crosshairThickness = max(Settings.crosshairThickness - 0.001f, 0.001f)
@@ -115,7 +113,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         decimalFormat.format(max(Settings.crosshairThickness, 0.0f) * 1000)
     })
 
-    createVariableSetting(scene, 0.15f, "Crosshair Color", increase = {
+    createVariableSetting(this, 0.15f, "Crosshair Color", increase = {
         Settings.crosshairColor = when (Settings.crosshairColor) {
             CrosshairColor.RED -> CrosshairColor.GREEN
             CrosshairColor.GREEN -> CrosshairColor.BLUE
@@ -141,7 +139,7 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         }
     })
 
-    createVariableSetting(scene, 0.0f, "Crosshair Shape", increase = {
+    createVariableSetting(this, 0.0f, "Crosshair Shape", increase = {
         Settings.crosshairShape = when (Settings.crosshairShape) {
             CrosshairShape.CIRCLE -> CrosshairShape.SQUARE
             CrosshairShape.SQUARE -> CrosshairShape.CROSS
@@ -161,38 +159,36 @@ fun createSettingsScene(glfwContext: GlfwContext): Scene {
         }
     })
 
-    scene.create {
+    create {
         addComponent(Button(
-            this, scene, "Back",
+            this, "Back",
             horizontalAlign = TextAlign.CENTER, onClick = {
-                scene.tickContext!!.sceneManager.scene = createMainMenu(glfwContext)
+                createMainMenu(game)
             }
         ))
 
         transform.position = Vec3(-1.0f, 0.0f, -0.9f)
     }
 
-    scene.create {
+    create {
         addComponent(Button(
-            this, scene, "Play",
+            this, "Play",
             horizontalAlign = TextAlign.CENTER, onClick = {
-                scene.tickContext!!.sceneManager.scene = createGameScene(glfwContext)
+                createGameScene(game)
             }
         ))
 
         transform.position = Vec3(1.0f, 0.0f, -0.9f)
     }
 
-    scene.create {
+    create {
         addComponent(Button(
-            this, scene, "Toggle Fullscreen",
+            this, "Toggle Fullscreen",
             horizontalAlign = TextAlign.CENTER, onClick = {
-                glfwContext.fullscreen = !glfwContext.fullscreen
+                game.glfwContext.fullscreen = !game.glfwContext.fullscreen
             }
         ))
 
         transform.position = Vec3(0.0f, 0.0f, -0.8f)
     }
-
-    return scene
 }

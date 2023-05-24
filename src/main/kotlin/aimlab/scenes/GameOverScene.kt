@@ -6,11 +6,11 @@ import aimlab.aimlabclient.models.Stat
 import aimlab.aimlabclient.post
 import aimlab.systems.AimlabKeyboardControls
 import engine.Scene
-import engine.components.Button
-import engine.components.TextRenderer
+import aimlab.components.Button
+import aimlab.components.TextRenderer
 import engine.systems.Camera2d
 import engine.systems.RenderPipeline
-import engine.systems.UiManager
+import aimlab.systems.UiManager
 import glm_.vec3.Vec3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,9 +18,7 @@ import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.util.*
 
-fun createGameOverScene(score: Double, combo: UInt, accuracy: Double, gameScene: Scene): Scene {
-    val scene = Scene(gameScene.glfwContext)
-
+fun createGameOverScene(score: Double, combo: UInt, accuracy: Double, gameScene: Scene) = gameScene.game.newScene {
     glfwContext.cursorHidden = false
 
     runBlocking {
@@ -42,40 +40,42 @@ fun createGameOverScene(score: Double, combo: UInt, accuracy: Double, gameScene:
         }
     }
 
-    scene.systems.add(RenderPipeline(scene))
-    scene.systems.add(AimlabKeyboardControls(scene))
-    scene.systems.add(Camera2d(scene))
-    scene.systems.add(UiManager(scene))
+    systems.add(RenderPipeline(this))
+    systems.add(AimlabKeyboardControls(this))
+    systems.add(Camera2d(this))
+    systems.add(UiManager(this))
 
-    scene.create {
-        addComponent(TextRenderer(this, scene, "Game Over", horizontalAlign = TextAlign.CENTER))
+    create {
+        addComponent(TextRenderer(this, "Game Over", horizontalAlign = TextAlign.CENTER))
         transform.position = Vec3(0.0f, 0.0f, 0.5f)
     }
 
-    scene.create {
-        addComponent(TextRenderer(this, scene, "Score: $score", horizontalAlign = TextAlign.CENTER))
+    create {
+        addComponent(TextRenderer(this, "Score: $score", horizontalAlign = TextAlign.CENTER))
         transform.position = Vec3(0.0f, 0.0f, 0.4f)
     }
 
-    scene.create {
-        addComponent(Button(
-            this, scene, "Restart",
+    create {
+        addComponent(
+            Button(
+            this, "Restart",
             horizontalAlign = TextAlign.CENTER, onClick = {
-            scene.tickContext!!.sceneManager.scene = createGameScene(gameScene.glfwContext)
-        }))
+            createGameScene(scene.game)
+        })
+        )
 
         transform.position = Vec3(0.0f, 0.0f, -0.3f)
     }
 
-    scene.create {
-        addComponent(Button(
-            this, scene, "Main Menu",
+    create {
+        addComponent(
+            Button(
+            this, "Main Menu",
             horizontalAlign = TextAlign.CENTER, onClick = {
-            scene.tickContext!!.sceneManager.scene = createMainMenu(gameScene.glfwContext)
-        }))
+            createMainMenu(scene.game)
+        })
+        )
 
         transform.position = Vec3(0.0f, 0.0f, -0.4f)
     }
-
-    return scene
 }

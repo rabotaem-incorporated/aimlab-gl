@@ -3,58 +3,63 @@ package engine
 import glm_.vec4.Vec4
 import graphics.*
 
+/**
+ * Это контекст, в котором запускается игра, до создания сцен.
+ *
+ * Только в этом контексте можно подгружать модели, текстуры и т. д. из ресурсов.
+ *
+ * Создавать [Vao] можно и позднее, но все необходимые [Mesh] и [Texture] нужно подгрузить здесь.
+ *
+ * @see Vao
+ * @see Mesh
+ * @see Texture
+ */
 class GameLaunchContext(
     val glfwContext: GlfwContext,
 ) {
-    val sceneManager: SceneManager = SceneManager()
-
+    /**
+     * Загружает модель из файла и срезу же создает [Vao] для нее.
+     */
     fun loadModel(path: String): Vao {
-        return Mesh.loadObj(path).vao()
+        return loadObj(path).vao()
     }
 
+    /**
+     * Загружает модель из файла, но просто возращает ее,
+     *
+     * не создавая [Vao] и не отправляя ничего на GPU.
+     */
     fun loadObj(path: String): Mesh {
         return Mesh.loadObj(path)
     }
 
+    /**
+     * Загружает текстуру из файла.
+     */
     fun loadTexture(path: String): Texture {
         return Texture(path)
     }
 }
 
-class GameTickContext(
-    val glfwContext: GlfwContext,
-    private val shader: ShaderProgram,
-    val sceneManager: SceneManager,
-) {
-    val time = glfwContext.time
-    val input = glfwContext.input
-
-    fun draw(block: ShaderProgram.() -> Unit) {
-        shader.block()
-    }
-}
-
-class GameConfig {
-    val runOnStartup = mutableListOf<GameLaunchContext.() -> Unit>()
-    val runOnTick = mutableListOf<GameTickContext.() -> Unit>()
-
-    fun startup(block: GameLaunchContext.() -> Unit) {
-        runOnStartup.add(block)
-    }
-
-    fun mainLoop(block: GameTickContext.() -> Unit) {
-        runOnTick.add(block)
-    }
-}
-
-fun launchGame(block: GameLaunchContext.() -> Unit) = NativeAllocatorContext.new {
+/**
+ * Запускает игру. Предполагается, что эта функция вызывается в точке входа.
+ *
+ * При запуске обязательно нужно создать сцену.
+ *
+ * Компиляция шейдеров и прочая низкоуровневая инициализация происходит здесь автоматически,
+ * [Game.glfwContext] трогать не следует.
+ *
+ * @param block блок, в котором можно подгрузить модели и текстуры.
+ */
+fun launchGame(block: GameLaunchContext.(Game) -> Unit) = NativeAllocatorContext.new {
     GlfwContext(
         WindowSettings(),
         GlfwSettings(),
     ).apply {
-        val gameConfig = GameConfig()
         val gameLaunchContext = GameLaunchContext(this)
-        gameLaunchContext.block()
+        val game = Game(this)
+
+        gameLaunchContext.block(game)
 
         val shader = compileShaderProgram {
             vertex("/engine.vert")
@@ -73,27 +78,13 @@ fun launchGame(block: GameLaunchContext.() -> Unit) = NativeAllocatorContext.new
             uniform("shininess")
         }
 
-        gameConfig.runOnStartup.forEach {
-            gameLaunchContext.it()
-        }
-
-        gameLaunchContext.sceneManager.scene.start()
+        game.scene.start()
 
         mainLoop {
             clear(Vec4())
 
             shader.using {
-                val gameTickContext = GameTickContext(
-                    this@apply,
-                    this@using,
-                    gameLaunchContext.sceneManager,
-                )
-
-                gameTickContext.sceneManager.scene.tickContext = gameTickContext
-
-                gameConfig.runOnTick.forEach { gameTickContext.it() }
-
-                gameTickContext.sceneManager.scene.tick()
+                game.scene.tick()
             }
         }
     }

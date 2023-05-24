@@ -52,9 +52,16 @@ class Shader(type: ShaderType, path: String) {
  * На данный момент любой контекст содержит не более одной шейдерной программы,
  * поэтому переключение шейдерных программ не используется.
  */
-class ShaderProgram(private val handle: Int, private val uniforms: Map<String, Uniform>) {
-     /** Заменяет шейдерную программу на данную */
-    fun use() = GL20.glUseProgram(handle)
+class ShaderProgram(
+    private val handle: Int,
+    private val uniforms: Map<String, Uniform>,
+    private val glfwContext: GlfwContext,
+) {
+    /** Заменяет шейдерную программу на данную */
+    fun use() {
+        GL20.glUseProgram(handle)
+        glfwContext.currentShaderProgram = this
+    }
 
     init {
         NativeAllocatorContext.scope {
@@ -145,7 +152,7 @@ class ShaderProgramBuilder {
      * Компилирует и слинковывает получившуюся шейдерную программу.
      * Это происходит автоматически при вызове [GlfwContext.compileShaderProgram]
      */
-    fun build(): ShaderProgram {
+    fun build(glfwContext: GlfwContext): ShaderProgram {
         val program = GL20.glCreateProgram()
 
         for (shader in shaders) GL20.glAttachShader(program, shader.handle)
@@ -167,6 +174,6 @@ class ShaderProgramBuilder {
 
         for (shader in shaders) GL20.glDeleteShader(shader.handle)
 
-        return ShaderProgram(program, uniforms)
+        return ShaderProgram(program, uniforms, glfwContext)
     }
 }
