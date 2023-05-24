@@ -87,5 +87,7 @@ fun launchGame(block: GameLaunchContext.(Game) -> Unit): Unit = NativeAllocatorC
                 game.scene.tick()
             }
         }
+
+        game.scene.stop()
     }
 }
